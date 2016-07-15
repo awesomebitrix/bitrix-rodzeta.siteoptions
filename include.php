@@ -18,7 +18,7 @@ EventManager::getInstance()->addEventHandler("main", "OnEndBufferContent", funct
 		return;
 	}
 	global $APPLICATION;
-	if ($APPLICATION->showPanelWasInvoked) { // ignore for admin panel
+	if ($APPLICATION->GetPublicShowMode() != "view") {
 		return;
 	}
 
