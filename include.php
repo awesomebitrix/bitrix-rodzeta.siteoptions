@@ -14,8 +14,11 @@ use Bitrix\Main\Config\Option;
 Loader::includeModule("iblock");
 
 EventManager::getInstance()->addEventHandler("main", "OnEndBufferContent", function (&$content) {
-	// TODO if edit mode - exit
 	if (CSite::InDir("/bitrix/")) {
+		return;
+	}
+	global $APPLICATION;
+	if ($APPLICATION->showPanelWasInvoked) { // ignore for admin panel
 		return;
 	}
 
