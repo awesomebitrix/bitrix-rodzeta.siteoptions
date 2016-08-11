@@ -50,7 +50,7 @@ $tabControl = new CAdminTabControl("tabControl", array(
 if ($request->isPost() && check_bitrix_sessid()) {
 	if (!empty($save) || !empty($restore)) {
 		Option::set("rodzeta.siteoptions", "iblock_id", (int)$request->getPost("iblock_id"));
-		Option::set("rodzeta.siteoptions", "section_id", (int)$request->getPost("section_id"));
+		Option::set("rodzeta.siteoptions", "section_code", $request->getPost("section_code"));
 
 		\Rodzeta\Siteoptions\Utils::createCache();
 
@@ -83,19 +83,29 @@ $tabControl->begin();
 
 	<tr>
 		<td class="adm-detail-content-cell-l" width="50%">
-			<label>ID инфоблока в котором хранятся дополнительные опции сайта</label>
+			<label>Инфоблок с дополнительными опциями сайта</label>
 		</td>
 		<td class="adm-detail-content-cell-r" width="50%">
-			<input class="input" type="text" size="4" name="iblock_id" value="<?= Option::get("rodzeta.siteoptions", "iblock_id", 1) ?>">
+			<?= GetIBlockDropDownListEx(
+				Option::get("rodzeta.siteoptions", "iblock_id", 1),
+				"iblock_type_id",
+				"iblock_id",
+				array(
+					"MIN_PERMISSION" => "R",
+				),
+				"",
+				""
+			) ?>
 		</td>
 	</tr>
 
 	<tr>
 		<td class="adm-detail-content-cell-l" width="50%">
-			<label>ID раздела в котором хранятся дополнительные опции сайта</label>
+			<label>Код раздела с дополнительными опциями сайта</label>
 		</td>
 		<td class="adm-detail-content-cell-r" width="50%">
-			<input name="section_id" type="text" size="4" value="<?= Option::get("rodzeta.siteoptions", "section_id", 5) ?>">
+			<input name="section_code" type="text" value="<?= Option::get("rodzeta.siteoptions", "section_code") ?>" disabled>
+			<input name="section_code" type="hidden" value="RODZETA_SITE">
 		</td>
 	</tr>
 

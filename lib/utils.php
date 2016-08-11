@@ -36,28 +36,31 @@ final class Utils {
 		fclose($fcsv);
 
 		// init from infoblock section
-		$res = \CIBlockElement::GetList(
-			array("SORT" => "ASC"),
-			array(
-				"IBLOCK_ID" => Option::get("rodzeta.siteoptions", "iblock_id", 1),
-				"SECTION_ID" => Option::get("rodzeta.siteoptions", "section_id", 5),
-				"ACTIVE" => "Y"
-			),
-			false,
-			false,
-			array() // fields
-		);
-		while ($row = $res->GetNextElement()) {
-			$item = $row->GetFields();
-			foreach (array("NAME", "PREVIEW_TEXT", "DETAIL_TEXT") as $code) {
-				$options["#" . $item["CODE"] . "_" . $code . "#"] = $item[$code];
-			}
-			foreach (array("PREVIEW_PICTURE", "DETAIL_PICTURE") as $code) {
-				$img = \CFile::GetFileArray($item[$code]);
-				$options["#" . $item["CODE"] . "_" . $code . "_SRC" . "#"] = $img["SRC"];
-				$options["#" . $item["CODE"] . "_" . $code . "_DESCRIPTION" . "#"] = $img["DESCRIPTION"];
-				$options["#" . $item["CODE"] . "_" . $code . "#"] =
-					'<img src="' . $img["SRC"] . '" alt="' . htmlspecialchars($img["DESCRIPTION"]) . '">';
+		$sectionCode = Option::get("rodzeta.siteoptions", "section_code");
+		if ($sectionCode != "") {
+			$res = \CIBlockElement::GetList(
+				array("SORT" => "ASC"),
+				array(
+					"IBLOCK_ID" => Option::get("rodzeta.siteoptions", "iblock_id", 1),
+					"SECTION_CODE" => $sectionCode,
+					"ACTIVE" => "Y"
+				),
+				false,
+				false,
+				array() // fields
+			);
+			while ($row = $res->GetNextElement()) {
+				$item = $row->GetFields();
+				foreach (array("NAME", "PREVIEW_TEXT", "DETAIL_TEXT") as $code) {
+					$options["#" . $item["CODE"] . "_" . $code . "#"] = $item[$code];
+				}
+				foreach (array("PREVIEW_PICTURE", "DETAIL_PICTURE") as $code) {
+					$img = \CFile::GetFileArray($item[$code]);
+					$options["#" . $item["CODE"] . "_" . $code . "_SRC" . "#"] = $img["SRC"];
+					$options["#" . $item["CODE"] . "_" . $code . "_DESCRIPTION" . "#"] = $img["DESCRIPTION"];
+					$options["#" . $item["CODE"] . "_" . $code . "#"] =
+						'<img src="' . $img["SRC"] . '" alt="' . htmlspecialchars($img["DESCRIPTION"]) . '">';
+				}
 			}
 		}
 

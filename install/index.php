@@ -49,12 +49,29 @@ class rodzeta_siteoptions extends CModule {
 		$this->PARTNER_URI = "http://rodzeta.ru/";
 	}
 
+	function InstallFiles() {
+    // copy example if not exists
+		$fname = $_SERVER["DOCUMENT_ROOT"] . "/upload/" . $this->MODULE_ID . ".csv";
+		if (!file_exists($fname)) {
+			copy($_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/" . $this->MODULE_ID . "/" . $this->MODULE_ID . ".csv", $fname);
+		}
+
+		return true;
+	}
+
+	function UnInstallFiles() {
+		//...
+		return true;
+	}
+
 	function DoInstall() {
 		ModuleManager::registerModule($this->MODULE_ID);
 		RegisterModuleDependences("main", "OnPageStart", $this->MODULE_ID);
+		$this->InstallFiles();
 	}
 
 	function DoUninstall() {
+		$this->UnInstallFiles();
 		UnRegisterModuleDependences("main", "OnPageStart", $this->MODULE_ID);
 		ModuleManager::unregisterModule($this->MODULE_ID);
 	}
