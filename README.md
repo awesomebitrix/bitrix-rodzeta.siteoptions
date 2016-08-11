@@ -56,6 +56,34 @@
     #HOME_DETAIL_PICTURE_DESCRIPTION#
     #HOME_DETAIL_PICTURE#
 
+### Пример подмены опции - номера телефона в зависимости от города
+
+Добавить свой обработчик в php_interface/init.php или модуль
+   
+    use Bitrix\Main\EventManager;
+    
+    EventManager::getInstance()->addEventHandler("main", "OnProlog", function () {
+        if (CSite::InDir("/bitrix/")) {
+            return;
+        }
+        /* example data
+        $_REQUEST["city"] = "Москва";
+        $GLOBALS["RODZETA"]["DATA_BY_CITY"] = array(
+            "Москва" => array(
+                    "PHONE" => "1234567",
+                    "MANAGER" => "Мэнеджер Имя Фамилия",
+            )
+        );
+        */
+        if (!empty($_REQUEST["city"]) &&
+                !empty($GLOBALS["RODZETA"]["DATA_BY_CITY"][$_REQUEST["city"]])) {
+            $content = $GLOBALS["RODZETA"]["DATA_BY_CITY"][$_REQUEST["city"]];
+            if (!empty($content["PHONE"])) {
+                $GLOBALS["RODZETA"]["SITE"]["#PHONE#"] = $content["PHONE"];
+            }
+        }
+    });
+
 ## Описание техподдержки и контактных данных
 
 Тех. поддержка и кастомизация оказывается на платной основе, e-mail: rivetweb@yandex.ru
