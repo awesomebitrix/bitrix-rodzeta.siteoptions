@@ -72,7 +72,7 @@ $tabControl->begin();
 
 ?>
 
-<form method="post" action="<?= sprintf('%s?mid=%s&lang=%s', $request->getRequestedPage(), urlencode($mid), LANGUAGE_ID) ?> type="get">
+<form method="post" action="<?= sprintf('%s?mid=%s&lang=%s', $request->getRequestedPage(), urlencode($mid), LANGUAGE_ID) ?>" type="get">
 	<?= bitrix_sessid_post() ?>
 
 	<?php $tabControl->beginNextTab() ?>
