@@ -13,6 +13,14 @@ use Bitrix\Main\Config\Option;
 
 Loader::includeModule("iblock");
 
+EventManager::getInstance()->addEventHandler("main", "OnBeforeProlog", function () {
+	if (CSite::InDir("/bitrix/")) {
+		return;
+	}
+	global $APPLICATION;
+	$GLOBALS["RODZETA"]["SITE"] = \Rodzeta\Siteoptions\Utils::get();
+});
+
 EventManager::getInstance()->addEventHandler("main", "OnEndBufferContent", function (&$content) {
 	if (CSite::InDir("/bitrix/")) {
 		return;
@@ -22,7 +30,7 @@ EventManager::getInstance()->addEventHandler("main", "OnEndBufferContent", funct
 		return;
 	}
 
-	$options = \Rodzeta\Siteoptions\Utils::get();
+	$options = &$GLOBALS["RODZETA"]["SITE"];
 
 	// predefined site options
 	$options["#CURRENT_YEAR#"] = date("Y");

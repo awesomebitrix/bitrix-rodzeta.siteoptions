@@ -36,12 +36,10 @@
 
 ### Пример использования в php-коде
     
-    $options = \Rodzeta\Siteoptions\Utils::get();
-    
     <div>
-        Номер телефона: <?= $options["#PHONE#"] ?><br>
-        Адрес: <?= $options["#ADDRESS#"] ?><br>
-        E-mail: <a href="mailto:<?= $options["#EMAIL#"] ?>"><?= $options["#EMAIL#"] ?></a>
+        Номер телефона: <?= $GLOBALS["RODZETA"]["SITE"]["#PHONE#"] ?><br>
+        Адрес: <?= $GLOBALS["RODZETA"]["SITE"]["#ADDRESS#"] ?><br>
+        E-mail: <a href="mailto:<?= $GLOBALS["RODZETA"]["SITE"]["#EMAIL#"] ?>"><?= $GLOBALS["RODZETA"]["SITE"]["#EMAIL#"] ?></a>
     </div>
 
 ### Пример опций из инфоблока
