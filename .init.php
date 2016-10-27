@@ -15,30 +15,39 @@ define(__NAMESPACE__ . "\_FILE_OPTIONS_CSV", "/upload/.rodzeta.siteoptions.csv")
 use Bitrix\Main\Loader;
 use Bitrix\Main\Config\Option;
 
+function OptionsFromCsv() {
+	$basePath = $_SERVER["DOCUMENT_ROOT"];
+	$options = array();
+	$fcsv = fopen($basePath . _FILE_OPTIONS_CSV, "r");
+	if ($fcsv === false) {
+		return $options;
+	}
+	//$i = 0;
+	while (($row = fgetcsv($fcsv, 4000, "\t")) !== false) {
+		//$i++;
+		//if ($i == 1) {
+		//	continue;
+		//}
+		$row = array_map("trim", $row);
+		if ($row[0] == "") {
+			continue;
+		}
+		$options[$row[0]] = $row[1];
+	}
+	fclose($fcsv);
+	return $options;
+}
+
 function CreateCache() {
 	Loader::includeModule("iblock");
 
 	$basePath = $_SERVER["DOCUMENT_ROOT"];
-
-	$fcsv = fopen($basePath . _FILE_OPTIONS_CSV, "r");
-	if ($fcsv !== false) {
-		// init from csv
-		$options = array();
-		$i = 0;
-		while (($row = fgetcsv($fcsv, 4000, "\t")) !== false) {
-			$i++;
-			if ($i == 1) {
-				continue;
-			}
-			$row = array_map("trim", $row);
-			$options["#" . $row[0] . "#"] = $row[1];
-		}
-		fclose($fcsv);
-	}
-
+	$options = array_map(function ($v) {
+		return "#" . $v . "#";
+	}, OptionsFromCsv());
 
 	// init from infoblock section
-	$sectionCode = Option::get("rodzeta.siteoptions", "section_code");
+	$sectionCode = Option::get("rodzeta.siteoptions", "section_code", "RODZETA_SITE");
 	if ($sectionCode != "") {
 		$res = \CIBlockElement::GetList(
 			array("SORT" => "ASC"),

@@ -111,8 +111,58 @@ $tabControl->begin();
 			<label>Код раздела</label>
 		</td>
 		<td class="adm-detail-content-cell-r" width="50%">
-			<input name="section_code" type="text" value="<?= Option::get("rodzeta.siteoptions", "section_code") ?>" disabled>
+			<input name="section_code" type="text" value="<?= Option::get("rodzeta.siteoptions", "section_code", "RODZETA_SITE") ?>" disabled>
 			<input name="section_code" type="hidden" value="RODZETA_SITE">
+		</td>
+	</tr>
+
+	<?php $tabControl->beginNextTab() ?>
+
+	<tr>
+		<td colspan="2">
+			<table width="100%">
+				<tbody>
+					<?php
+					$i = 0;
+					foreach (\Rodzeta\Siteoptions\OptionsFromCsv() as $optionCode => $optionValue) {
+						$i++;
+					?>
+						<tr>
+							<td>
+								<input type="text" placeholder="Код опции"
+									name="site_options[<?= $i ?>][0]"
+									value="<?= htmlspecialcharsex($optionCode) ?>"
+									style="width:96%;">
+							</td>
+							<td>
+								<input type="text" placeholder="Значение опции"
+									name="site_options[<?= $i ?>][1]"
+									value="<?= htmlspecialcharsex($optionValue) ?>"
+									style="width:96%;">
+							</td>
+						</tr>
+					<?php } ?>
+
+					<?php foreach (range(1, 20) as $n) {
+						$i++;
+					?>
+						<tr>
+							<td>
+								<input type="text" placeholder="Код опции"
+									name="site_options[<?= $i ?>][0]"
+									value=""
+									style="width:96%;">
+							</td>
+							<td>
+								<input type="text" placeholder="Значение опции"
+									name="site_options[<?= $i ?>][1]"
+									value=""
+									style="width:96%;">
+							</td>
+						</tr>
+					<?php } ?>
+				</tbody>
+			</table>
 		</td>
 	</tr>
 
