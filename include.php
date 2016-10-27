@@ -16,7 +16,7 @@ EventManager::getInstance()->addEventHandler("main", "OnBeforeProlog", function 
 		return;
 	}
 	global $APPLICATION;
-	$GLOBALS["RODZETA"]["SITE"] = \Rodzeta\Siteoptions\Options();
+	$GLOBALS["rodzeta.siteoptions"] = \Rodzeta\Siteoptions\Options();
 });
 
 EventManager::getInstance()->addEventHandler("main", "OnEndBufferContent", function (&$content) {
@@ -28,7 +28,7 @@ EventManager::getInstance()->addEventHandler("main", "OnEndBufferContent", funct
 		return;
 	}
 
-	$options = &$GLOBALS["RODZETA"]["SITE"];
+	$options = &$GLOBALS["rodzeta.siteoptions"];
 
 	// predefined site options
 	$options["#CURRENT_YEAR#"] = date("Y");

@@ -21,22 +21,21 @@ function CreateCache() {
 	$basePath = $_SERVER["DOCUMENT_ROOT"];
 
 	$fcsv = fopen($basePath . _FILE_OPTIONS_CSV, "r");
-	if ($fcsv === FALSE) {
-		return;
+	if ($fcsv !== false) {
+		// init from csv
+		$options = array();
+		$i = 0;
+		while (($row = fgetcsv($fcsv, 4000, "\t")) !== false) {
+			$i++;
+			if ($i == 1) {
+				continue;
+			}
+			$row = array_map("trim", $row);
+			$options["#" . $row[0] . "#"] = $row[1];
+		}
+		fclose($fcsv);
 	}
 
-	// init from csv
-	$options = array();
-	$i = 0;
-	while (($row = fgetcsv($fcsv, 4000, "\t")) !== FALSE) {
-		$i++;
-		if ($i == 1) {
-			continue;
-		}
-		$row = array_map("trim", $row);
-		$options["#" . $row[0] . "#"] = $row[1];
-	}
-	fclose($fcsv);
 
 	// init from infoblock section
 	$sectionCode = Option::get("rodzeta.siteoptions", "section_code");

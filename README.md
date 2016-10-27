@@ -37,9 +37,9 @@
 ### Пример использования в php-коде
     
     <div>
-        Номер телефона: <?= $GLOBALS["RODZETA"]["SITE"]["#PHONE#"] ?><br>
-        Адрес: <?= $GLOBALS["RODZETA"]["SITE"]["#ADDRESS#"] ?><br>
-        E-mail: <a href="mailto:<?= $GLOBALS["RODZETA"]["SITE"]["#EMAIL#"] ?>"><?= $GLOBALS["RODZETA"]["SITE"]["#EMAIL#"] ?></a>
+        Номер телефона: <?= $GLOBALS["rodzeta.siteoptions"]["#PHONE#"] ?><br>
+        Адрес: <?= $GLOBALS["rodzeta.siteoptions"]["#ADDRESS#"] ?><br>
+        E-mail: <a href="mailto:<?= $GLOBALS["rodzeta.siteoptions"]["#EMAIL#"] ?>"><?= $GLOBALS["rodzeta.siteoptions"]["#EMAIL#"] ?></a>
     </div>
 
 ### Пример опций из инфоблока
@@ -79,7 +79,7 @@
                 !empty($GLOBALS["RODZETA"]["DATA_BY_CITY"][$_REQUEST["city"]])) {
             $content = $GLOBALS["RODZETA"]["DATA_BY_CITY"][$_REQUEST["city"]];
             if (!empty($content["PHONE"])) {
-                $GLOBALS["RODZETA"]["SITE"]["#PHONE#"] = $content["PHONE"];
+                $GLOBALS["rodzeta.siteoptions"]["#PHONE#"] = $content["PHONE"];
             }
         }
     });
