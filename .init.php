@@ -38,13 +38,31 @@ function OptionsFromCsv() {
 	return $options;
 }
 
+function SaveToCsv($options) {
+	$basePath = $_SERVER["DOCUMENT_ROOT"];
+	$fcsv = fopen($basePath . _FILE_OPTIONS_CSV, "w");
+	if ($fcsv === false) {
+		return;
+	}
+	foreach ($options as $row) {
+		$row[0] = trim($row[0]);
+		$row[1] = trim($row[1]);
+		if ($row[0] == "" || $row[1] == "") {
+			continue;
+		}
+		fputcsv($fcsv, array($row[0], $row[1]), "\t");
+	}
+	fclose($fcsv);
+}
+
 function CreateCache() {
 	Loader::includeModule("iblock");
 
 	$basePath = $_SERVER["DOCUMENT_ROOT"];
-	$options = array_map(function ($v) {
-		return "#" . $v . "#";
-	}, OptionsFromCsv());
+	$options = array();
+	foreach (OptionsFromCsv() as $k => $v) {
+		$options["#" . $k . "#"] = $v;
+	}
 
 	// init from infoblock section
 	$sectionCode = Option::get("rodzeta.siteoptions", "section_code", "RODZETA_SITE");

@@ -59,6 +59,7 @@ if ($request->isPost() && check_bitrix_sessid()) {
 		Option::set("rodzeta.siteoptions", "iblock_id", (int)$request->getPost("iblock_id"));
 		Option::set("rodzeta.siteoptions", "section_code", $request->getPost("section_code"));
 
+		\Rodzeta\Siteoptions\SaveToCsv($request->getPost("site_options"));
 		\Rodzeta\Siteoptions\CreateCache();
 
 		CAdminMessage::showMessage(array(
