@@ -7,14 +7,14 @@
 
 namespace Rodzeta\Siteoptions;
 
+use Bitrix\Main\Loader;
 use Bitrix\Main\Config\Option;
 
 final class Utils {
 
-	const MAP_NAME = "/upload/cache.rodzeta.siteoptions.php";
-	const SRC_NAME = "/upload/rodzeta.siteoptions.csv";
-
 	static function createCache() {
+		Loader::includeModule("iblock");
+
 		$basePath = $_SERVER["DOCUMENT_ROOT"];
 
 		$fcsv = fopen($basePath . self::SRC_NAME, "r");

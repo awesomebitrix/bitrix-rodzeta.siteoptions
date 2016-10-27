@@ -7,11 +7,12 @@
 
 defined('B_PROLOG_INCLUDED') and (B_PROLOG_INCLUDED === true) or die();
 
-use Bitrix\Main\Loader;
 use Bitrix\Main\EventManager;
-use Bitrix\Main\Config\Option;
 
-Loader::includeModule("iblock");
+define("\Rodzeta\Siteoptions\_APP", __DIR__ . "/");
+define("\Rodzeta\Siteoptions\_LIB", __DIR__  . "/lib/");
+define("\Rodzeta\Siteoptions\_FILE_OPTIONS", "/upload/.rodzeta.siteoptions.php");
+define("\Rodzeta\Siteoptions\_FILE_CSV", "/upload/.rodzeta.siteoptions.csv");
 
 EventManager::getInstance()->addEventHandler("main", "OnBeforeProlog", function () {
 	if (CSite::InDir("/bitrix/")) {
