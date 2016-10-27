@@ -10,7 +10,6 @@ defined('B_PROLOG_INCLUDED') and (B_PROLOG_INCLUDED === true) or die();
 use Bitrix\Main\Application;
 use Bitrix\Main\Config\Option;
 use Bitrix\Main\Localization\Loc;
-use Bitrix\Main\Loader;
 
 if (!$USER->isAdmin()) {
 	$APPLICATION->authForm("ACCESS DENIED");
@@ -91,7 +90,7 @@ $tabControl->begin();
 
 	<tr>
 		<td class="adm-detail-content-cell-l" width="50%">
-			<label>Инфоблок с дополнительными опциями сайта</label>
+			<label>Инфоблок</label>
 		</td>
 		<td class="adm-detail-content-cell-r" width="50%">
 			<?= GetIBlockDropDownListEx(
@@ -109,7 +108,7 @@ $tabControl->begin();
 
 	<tr>
 		<td class="adm-detail-content-cell-l" width="50%">
-			<label>Код раздела с дополнительными опциями сайта</label>
+			<label>Код раздела</label>
 		</td>
 		<td class="adm-detail-content-cell-r" width="50%">
 			<input name="section_code" type="text" value="<?= Option::get("rodzeta.siteoptions", "section_code") ?>" disabled>
