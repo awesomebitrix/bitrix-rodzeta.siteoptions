@@ -29,7 +29,6 @@ EventManager::getInstance()->addEventHandler("main", "OnEndBufferContent", funct
 	}
 
 	$options = &$GLOBALS["rodzeta.siteoptions"];
-
 	// predefined site options
 	$options["#CURRENT_YEAR#"] = date("Y");
 	$options["#CURRENT_MONTH#"] = date("m");
