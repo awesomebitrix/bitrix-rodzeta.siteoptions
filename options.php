@@ -10,7 +10,6 @@ defined('B_PROLOG_INCLUDED') and (B_PROLOG_INCLUDED === true) or die();
 use Bitrix\Main\Application;
 use Bitrix\Main\Config\Option;
 use Bitrix\Main\Localization\Loc;
-use Bitrix\Main\Text\String;
 use Bitrix\Main\Loader;
 
 if (!$USER->isAdmin()) {
@@ -29,10 +28,18 @@ $tabControl = new CAdminTabControl("tabControl", array(
 		"TAB" => Loc::getMessage("RODZETA_SITEOPTIONS_MAIN_TAB_SET"),
 		"TITLE" => Loc::getMessage("RODZETA_SITEOPTIONS_MAIN_TAB_TITLE_SET"),
   ),
+  array(
+		"DIV" => "edit2",
+		"TAB" => Loc::getMessage("RODZETA_SITEOPTIONS_DATA_TAB_SET"),
+		"TITLE" => Loc::getMessage("RODZETA_SITEOPTIONS_DATA_TAB_TITLE_SET", array(
+			"#FILE#" => \Rodzeta\Siteoptions\_FILE_OPTIONS_CSV)
+		),
+  ),
 ));
 
 ?>
 
+<?php /*
 <?= BeginNote() ?>
 <p>
 	<b>Как работает</b>
@@ -44,6 +51,7 @@ $tabControl = new CAdminTabControl("tabControl", array(
 	</ul>
 </p>
 <?= EndNote() ?>
+*/ ?>
 
 <?php
 
@@ -52,7 +60,7 @@ if ($request->isPost() && check_bitrix_sessid()) {
 		Option::set("rodzeta.siteoptions", "iblock_id", (int)$request->getPost("iblock_id"));
 		Option::set("rodzeta.siteoptions", "section_code", $request->getPost("section_code"));
 
-		\Rodzeta\Siteoptions\Utils::createCache();
+		\Rodzeta\Siteoptions\CreateCache();
 
 		CAdminMessage::showMessage(array(
 	    "MESSAGE" => Loc::getMessage("RODZETA_SITEOPTIONS_OPTIONS_SAVED"),
