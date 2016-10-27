@@ -53,7 +53,7 @@ class rodzeta_siteoptions extends CModule {
     // copy example if not exists
 		$fname = $_SERVER["DOCUMENT_ROOT"] . "/upload/" . $this->MODULE_ID . ".csv";
 		if (!file_exists($fname)) {
-			copy($_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/" . $this->MODULE_ID . "/" . $this->MODULE_ID . ".csv", $fname);
+			copy($_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/" . $this->MODULE_ID . "/examples/" . $this->MODULE_ID . ".csv", $fname);
 		}
 
 		return true;
