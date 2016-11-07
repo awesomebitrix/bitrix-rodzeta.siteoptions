@@ -80,7 +80,7 @@ $tabControl->begin();
 				<tbody>
 					<?php
 					$i = 0;
-					foreach (AppendValues(Options(), 10, array(false, null, null)) as $optionCode => $optionValue) {
+					foreach (AppendValues(Options(), 10, array(true, null, null)) as $optionCode => $optionValue) {
 						$i++;
 						if (empty($optionValue[0])) {
 							continue;

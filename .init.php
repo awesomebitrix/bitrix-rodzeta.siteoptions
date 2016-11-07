@@ -51,6 +51,12 @@ function CreateCache($siteOptions) {
 
 	$options = array();
 	foreach ($siteOptions as $v) {
+		$v["CODE"] = trim($v["CODE"]);
+		$v["VALUE"] = trim($v["VALUE"]);
+		$v["NAME"] = trim($v["NAME"]);
+		if ($v["CODE"] == "") {
+			continue;
+		}
 		$options["#" . $v["CODE"] . "#"] = array(true, $v["VALUE"], $v["NAME"]);
 	}
 
