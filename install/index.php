@@ -50,17 +50,16 @@ class rodzeta_siteoptions extends CModule {
 	}
 
 	function InstallFiles() {
-		/*
-    // copy example if not exists
-		$fname = $_SERVER["DOCUMENT_ROOT"] . "/upload/" . $this->MODULE_ID . ".csv";
+		// copy example if not exists
+		$fname = $_SERVER["DOCUMENT_ROOT"] . "/upload/." . $this->MODULE_ID . ".php";
 		if (!file_exists($fname)) {
-			copy($_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/" . $this->MODULE_ID . "/examples/" . $this->MODULE_ID . ".csv", $fname);
+			copy($_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/" . $this->MODULE_ID . "/install/data/." . $this->MODULE_ID . ".php", $fname);
 		}
-		*/
+
 		return true;
 	}
 
-	function UnInstallFiles() {
+	function UninstallFiles() {
 		//...
 
 		return true;
@@ -73,7 +72,7 @@ class rodzeta_siteoptions extends CModule {
 	}
 
 	function DoUninstall() {
-		$this->UnInstallFiles();
+		$this->UninstallFiles();
 		UnRegisterModuleDependences("main", "OnPageStart", $this->MODULE_ID);
 		ModuleManager::unregisterModule($this->MODULE_ID);
 	}
