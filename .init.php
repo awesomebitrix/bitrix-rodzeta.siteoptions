@@ -7,61 +7,22 @@
 
 namespace Rodzeta\Siteoptions;
 
-define(__NAMESPACE__ . "\_APP", __DIR__ . "/");
-define(__NAMESPACE__ . "\_LIB", __DIR__  . "/lib/");
-define(__NAMESPACE__ . "\_FILE_OPTIONS", "/upload/.rodzeta.siteoptions.php");
-define(__NAMESPACE__ . "\_FILE_OPTIONS_CSV", "/upload/.rodzeta.siteoptions.csv");
+define(__NAMESPACE__ . "\APP", __DIR__ . "/");
+define(__NAMESPACE__ . "\LIB", __DIR__  . "/lib/");
+define(__NAMESPACE__ . "\FILE_OPTIONS", "/upload/.rodzeta.siteoptions.php");
+
+require LIB . "encoding/php-array.php";
 
 use Bitrix\Main\Loader;
 use Bitrix\Main\Config\Option;
 
-function OptionsFromCsv() {
-	$basePath = $_SERVER["DOCUMENT_ROOT"];
-	$options = array();
-	$fcsv = fopen($basePath . _FILE_OPTIONS_CSV, "r");
-	if ($fcsv === false) {
-		return $options;
-	}
-	//$i = 0;
-	while (($row = fgetcsv($fcsv, 4000, "\t")) !== false) {
-		//$i++;
-		//if ($i == 1) {
-		//	continue;
-		//}
-		$row = array_map("trim", $row);
-		if ($row[0] == "") {
-			continue;
-		}
-		$options[$row[0]] = $row[1];
-	}
-	fclose($fcsv);
-	return $options;
-}
-
-function SaveToCsv($options) {
-	$basePath = $_SERVER["DOCUMENT_ROOT"];
-	$fcsv = fopen($basePath . _FILE_OPTIONS_CSV, "w");
-	if ($fcsv === false) {
-		return;
-	}
-	foreach ($options as $row) {
-		$row[0] = trim($row[0]);
-		$row[1] = trim($row[1]);
-		if ($row[0] == "" || $row[1] == "") {
-			continue;
-		}
-		fputcsv($fcsv, array($row[0], $row[1]), "\t");
-	}
-	fclose($fcsv);
-}
-
-function CreateCache() {
+function CreateCache($siteOptions) {
 	Loader::includeModule("iblock");
 
 	$basePath = $_SERVER["DOCUMENT_ROOT"];
 	$options = array();
-	foreach (OptionsFromCsv() as $k => $v) {
-		$options["#" . $k . "#"] = $v;
+	foreach ($siteOptions as $v) {
+		$options["#" . $v["CODE"] . "#"] = array($v["MAIN"], $v["VALUE"], $v["NAME"]);
 	}
 
 	// init from infoblock section
@@ -81,24 +42,31 @@ function CreateCache() {
 		while ($row = $res->GetNextElement()) {
 			$item = $row->GetFields();
 			foreach (array("NAME", "PREVIEW_TEXT", "DETAIL_TEXT") as $code) {
-				$options["#" . $item["CODE"] . "_" . $code . "#"] = $item[$code];
+				$options["#" . $item["CODE"] . "_" . $code . "#"] = array(false, $item[$code], "");
 			}
 			foreach (array("PREVIEW_PICTURE", "DETAIL_PICTURE") as $code) {
 				$img = \CFile::GetFileArray($item[$code]);
-				$options["#" . $item["CODE"] . "_" . $code . "_SRC" . "#"] = $img["SRC"];
-				$options["#" . $item["CODE"] . "_" . $code . "_DESCRIPTION" . "#"] = $img["DESCRIPTION"];
+				$options["#" . $item["CODE"] . "_" . $code . "_SRC" . "#"] =
+					array(false, $img["SRC"], "");
+				$options["#" . $item["CODE"] . "_" . $code . "_DESCRIPTION" . "#"] =
+					array(false, $img["DESCRIPTION"], "");
 				$options["#" . $item["CODE"] . "_" . $code . "#"] =
-					'<img src="' . $img["SRC"] . '" alt="' . htmlspecialchars($img["DESCRIPTION"]) . '">';
+					array(false, '<img src="' . $img["SRC"] . '" alt="'
+							. htmlspecialchars($img["DESCRIPTION"]) . '">', "");
 			}
 		}
 	}
 
-	file_put_contents(
-		$basePath . _FILE_OPTIONS,
-		"<?php\nreturn " . var_export($options, true) . ";"
-	);
+	\Encoding\PhpArray\Write($basePath . FILE_OPTIONS, $options);
 }
 
 function Options() {
-	return include $_SERVER["DOCUMENT_ROOT"] . _FILE_OPTIONS;
+	return include $_SERVER["DOCUMENT_ROOT"] . FILE_OPTIONS;
+}
+
+function AppendValues($data, $n, $v) {
+	for ($i = 0; $i < $n; $i++) {
+		$data[] = $v;
+	}
+	return $data;
 }

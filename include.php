@@ -5,6 +5,8 @@
  * MIT License
  ************************************************************************************************/
 
+namespace Rodzeta\Siteoptions;
+
 defined('B_PROLOG_INCLUDED') and (B_PROLOG_INCLUDED === true) or die();
 
 require __DIR__ . "/.init.php";
@@ -12,15 +14,14 @@ require __DIR__ . "/.init.php";
 use Bitrix\Main\EventManager;
 
 EventManager::getInstance()->addEventHandler("main", "OnBeforeProlog", function () {
-	if (CSite::InDir("/bitrix/")) {
+	if (\CSite::InDir("/bitrix/")) {
 		return;
 	}
-	global $APPLICATION;
-	$GLOBALS["rodzeta.siteoptions"] = \Rodzeta\Siteoptions\Options();
+	$GLOBALS["rodzeta.siteoptions"] = Options();
 });
 
 EventManager::getInstance()->addEventHandler("main", "OnEndBufferContent", function (&$content) {
-	if (CSite::InDir("/bitrix/")) {
+	if (\CSite::InDir("/bitrix/")) {
 		return;
 	}
 	global $APPLICATION;
@@ -28,12 +29,21 @@ EventManager::getInstance()->addEventHandler("main", "OnEndBufferContent", funct
 		return;
 	}
 
-	$options = &$GLOBALS["rodzeta.siteoptions"];
 	// predefined site options
-	$options["#CURRENT_YEAR#"] = date("Y");
-	$options["#CURRENT_MONTH#"] = date("m");
-	$options["#CURRENT_DAY#"] = date("d");
-	$options["#CURRENT_DATE#"] = date("d.m.Y");
+	$GLOBALS["rodzeta.siteoptions"]["#CURRENT_YEAR#"] = array(false, date("Y"), "");
+	$GLOBALS["rodzeta.siteoptions"]["#CURRENT_MONTH#"] = array(false, date("m"), "");
+	$GLOBALS["rodzeta.siteoptions"]["#CURRENT_DAY#"] = array(false, date("d"), "");
+	$GLOBALS["rodzeta.siteoptions"]["#CURRENT_DATE#"] = array(false, date("d.m.Y"), "");
 
-	$content = str_replace(array_keys($options), array_values($options), $content);
+	// replace options in page content
+	$content = str_replace(
+		array_keys($GLOBALS["rodzeta.siteoptions"]),
+		array_map(
+			function ($v) {
+				return $v[1];
+			},
+			array_values($GLOBALS["rodzeta.siteoptions"])
+		),
+		$content
+	);
 });
