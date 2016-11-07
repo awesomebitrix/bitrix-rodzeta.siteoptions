@@ -48,9 +48,6 @@ $tabControl = new \CAdminTabControl("tabControl", array(
 if ($request->isPost() && check_bitrix_sessid()) {
 	if (!empty($save) || !empty($restore)) {
 		Option::set("rodzeta.siteoptions", "iblock_id", (int)$request->getPost("iblock_id"));
-		Option::set("rodzeta.siteoptions", "section_code", $request->getPost("section_code"));
-
-		// TODO create section for options
 
 		CreateCache($request->getPost("site_options"));
 
@@ -140,16 +137,6 @@ $tabControl->begin();
 				"",
 				""
 			) ?>
-		</td>
-	</tr>
-
-	<tr>
-		<td class="adm-detail-content-cell-l" width="50%">
-			<label>Код раздела</label>
-		</td>
-		<td class="adm-detail-content-cell-r" width="50%">
-			<input name="section_code" type="text" value="<?= Option::get("rodzeta.siteoptions", "section_code", "RODZETA_SITE") ?>" disabled>
-			<input name="section_code" type="hidden" value="RODZETA_SITE">
 		</td>
 	</tr>
 
