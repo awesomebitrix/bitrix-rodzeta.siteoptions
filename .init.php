@@ -51,7 +51,7 @@ function CreateCache($siteOptions) {
 
 	$options = array();
 	foreach ($siteOptions as $v) {
-		$options["#" . $v["CODE"] . "#"] = array($v["MAIN"], $v["VALUE"], $v["NAME"]);
+		$options["#" . $v["CODE"] . "#"] = array(true, $v["VALUE"], $v["NAME"]);
 	}
 
 	// init from infoblock section

@@ -88,9 +88,6 @@ $tabControl->begin();
 					?>
 						<tr>
 							<td>
-								<input type="hidden" name="site_options[<?= $i ?>][MAIN]" value="1">
-							</td>
-							<td>
 								<input type="text" placeholder="Код опции"
 									name="site_options[<?= $i ?>][CODE]"
 									value="<?= htmlspecialcharsex(substr($optionCode, 1, -1)) ?>"
