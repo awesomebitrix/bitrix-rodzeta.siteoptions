@@ -75,11 +75,17 @@ function CreateCache($siteOptions, $snippetsCategory) {
 		if (file_exists($snippetsPath . "/.content.php")) {
 			include $snippetsPath . "/.content.php";
 		}
-		foreach ($options as $snippetContent => $snippetInfo) {
+		foreach (array_merge($options, array(
+				"#CURRENT_YEAR#" => array(false, "#CURRENT_YEAR#", "Текущий год"),
+				"#CURRENT_MONTH#" => array(false, "#CURRENT_MONTH#", "Текущий месяц"),
+				"#CURRENT_DAY#" => array(false, "#CURRENT_DAY#", "Текущий день"),
+				"#CURRENT_DATE#" => array(false, "#CURRENT_DATE#", "Текущая дата"),
+			)) as $snippetContent => $snippetInfo) {
 			$snippetFile = "snippet" . substr($snippetContent, 1, -1) . ".snp";
 			$SNIPPETS[$snippetsCategory . "/" . $snippetFile] = array("title" => $snippetInfo[2]);
 			file_put_contents($snippetsCategoryPath . "/" . $snippetFile, $snippetContent);
 		}
+		ksort($SNIPPETS);
 		file_put_contents($snippetsPath . "/.content.php", '<?php
 			if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true) die();
 			$SNIPPETS = ' . var_export($SNIPPETS, true) . ';'
