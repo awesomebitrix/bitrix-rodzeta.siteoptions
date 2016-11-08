@@ -66,7 +66,7 @@ class rodzeta_siteoptions extends CModule {
 	}
 
 	function DoInstall() {
-		if (version_compare(phpversion(), '7', '<')) {
+		if (version_compare(PHP_VERSION, '7', '<')) {
 			global $APPLICATION;
    		$APPLICATION->ThrowException(Loc::getMessage("RODZETA_REQUIREMENTS_PHP_VERSION"));
 			return false;
