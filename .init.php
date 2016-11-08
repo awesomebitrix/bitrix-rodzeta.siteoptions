@@ -81,6 +81,9 @@ function CreateCache($siteOptions, $snippetsCategory) {
 				"#CURRENT_DAY#" => [false, "#CURRENT_DAY#", "Текущий день"],
 				"#CURRENT_DATE#" => [false, "#CURRENT_DATE#", "Текущая дата"],
 			]) as $snippetContent => $snippetInfo) {
+			if ($snippetInfo[2] == "") {
+				continue;
+			}
 			$snippetFile = "snippet" . substr($snippetContent, 1, -1) . ".snp";
 			$SNIPPETS[$snippetsCategory . "/" . $snippetFile] = ["title" => $snippetInfo[2]];
 			file_put_contents($snippetsCategoryPath . "/" . $snippetFile, $snippetContent);
