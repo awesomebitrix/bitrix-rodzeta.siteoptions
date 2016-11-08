@@ -30,10 +30,10 @@ EventManager::getInstance()->addEventHandler("main", "OnEndBufferContent", funct
 	}
 
 	// predefined site options
-	$GLOBALS["rodzeta.siteoptions"]["#CURRENT_YEAR#"] = array(false, date("Y"), "");
-	$GLOBALS["rodzeta.siteoptions"]["#CURRENT_MONTH#"] = array(false, date("m"), "");
-	$GLOBALS["rodzeta.siteoptions"]["#CURRENT_DAY#"] = array(false, date("d"), "");
-	$GLOBALS["rodzeta.siteoptions"]["#CURRENT_DATE#"] = array(false, date("d.m.Y"), "");
+	$GLOBALS["rodzeta.siteoptions"]["#CURRENT_YEAR#"] = [false, date("Y"), ""];
+	$GLOBALS["rodzeta.siteoptions"]["#CURRENT_MONTH#"] = [false, date("m"), ""];
+	$GLOBALS["rodzeta.siteoptions"]["#CURRENT_DAY#"] = [false, date("d"), ""];
+	$GLOBALS["rodzeta.siteoptions"]["#CURRENT_DATE#"] = [false, date("d.m.Y"), ""];
 
 	// replace options in page content
 	$content = str_replace(

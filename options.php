@@ -26,20 +26,20 @@ $request = $context->getRequest();
 
 Loc::loadMessages(__FILE__);
 
-$tabControl = new \CAdminTabControl("tabControl", array(
-  array(
+$tabControl = new \CAdminTabControl("tabControl", [
+  [
 		"DIV" => "edit2",
 		"TAB" => Loc::getMessage("RODZETA_SITEOPTIONS_DATA_TAB_SET"),
-		"TITLE" => Loc::getMessage("RODZETA_SITEOPTIONS_DATA_TAB_TITLE_SET", array(
+		"TITLE" => Loc::getMessage("RODZETA_SITEOPTIONS_DATA_TAB_TITLE_SET", [
 			"#FILE#" => FILE_OPTIONS
-		)),
-  ),
-  array(
+		]),
+  ],
+  [
 		"DIV" => "edit1",
 		"TAB" => Loc::getMessage("RODZETA_SITEOPTIONS_MAIN_TAB_SET"),
 		"TITLE" => Loc::getMessage("RODZETA_SITEOPTIONS_MAIN_TAB_TITLE_SET"),
-  ),
-));
+  ],
+]);
 
 ?>
 
@@ -51,18 +51,11 @@ if ($request->isPost() && check_bitrix_sessid()) {
 
 		CreateCache($request->getPost("site_options"), Loc::getMessage("RODZETA_SITEOPTIONS_CATEGORY_SNIPPETS"));
 
-		\CAdminMessage::showMessage(array(
+		\CAdminMessage::showMessage([
 	    "MESSAGE" => Loc::getMessage("RODZETA_SITEOPTIONS_OPTIONS_SAVED"),
 	    "TYPE" => "OK",
-	  ));
-	}	/*else if ($request->getPost("clear") != "") {
-
-
-		CAdminMessage::showMessage(array(
-	    "MESSAGE" => Loc::getMessage("RODZETA_SITEOPTIONS_OPTIONS_RESETED"),
-	    "TYPE" => "OK",
-	  ));
-	} */
+	  ]);
+	}
 }
 
 $tabControl->begin();
@@ -80,7 +73,7 @@ $tabControl->begin();
 				<tbody>
 					<?php
 					$i = 0;
-					foreach (AppendValues(Options(), 5, array(true, null, null)) as $optionCode => $optionValue) {
+					foreach (AppendValues(Options(), 5, [true, null, null]) as $optionCode => $optionValue) {
 						if (empty($optionValue[0])) {
 							continue;
 						}
@@ -128,9 +121,9 @@ $tabControl->begin();
 				Option::get("rodzeta.siteoptions", "iblock_id", 1),
 				"iblock_type_id",
 				"iblock_id",
-				array(
+				[
 					"MIN_PERMISSION" => "R",
-				),
+				],
 				"",
 				""
 			) ?>
