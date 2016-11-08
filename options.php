@@ -76,17 +76,17 @@ $tabControl->begin();
 
 	<tr>
 		<td colspan="2">
-			<table width="100%">
+			<table width="100%" class="rodzeta-siteoptions-table">
 				<tbody>
 					<?php
 					$i = 0;
-					foreach (AppendValues(Options(), 10, array(true, null, null)) as $optionCode => $optionValue) {
-						$i++;
+					foreach (AppendValues(Options(), 5, array(true, null, null)) as $optionCode => $optionValue) {
 						if (empty($optionValue[0])) {
 							continue;
 						}
+						$i++;
 					?>
-						<tr>
+						<tr data-idx="<?= $i ?>">
 							<td>
 								<input type="text" placeholder="Код опции"
 									name="site_options[<?= $i ?>][CODE]"
@@ -144,6 +144,47 @@ $tabControl->begin();
   <input class="adm-btn-save" type="submit" name="save" value="Применить настройки">
 
 </form>
+
+<script>
+
+BX.ready(function () {
+	"use strict";
+
+	function makeAutoAppend($table) {
+
+		function bindEvents($row) {
+			for (let $input of $row.querySelectorAll('input[type="text"]')) {
+				$input.addEventListener("change", function (event) {
+					let $tr = event.target.closest("tr");
+					let $trLast = $table.rows[$table.rows.length - 1];
+					if ($tr != $trLast) {
+						return;
+					}
+					$table.insertRow(-1);
+					$trLast = $table.rows[$table.rows.length - 1];
+					$trLast.innerHTML = $tr.innerHTML;
+					let idx = parseInt($tr.getAttribute("data-idx")) + 1;
+					$trLast.setAttribute("data-idx", idx);
+					// TODO update names
+					for (let $input of $trLast.querySelectorAll('input[type="text"]')) {
+						$input.setAttribute("name", $input.getAttribute("name").replace(/([a-zA-Z0-9])\[\d+\]/, "$1[" + idx + "]"));
+					}
+					bindEvents($trLast);
+				});
+			}
+		}
+
+		for (let $row of document.querySelectorAll(".rodzeta-siteoptions-table tr")) {
+			bindEvents($row);
+		}
+	}
+
+	makeAutoAppend(document.querySelector(".rodzeta-siteoptions-table"));
+
+});
+
+
+</script>
 
 <?php
 
