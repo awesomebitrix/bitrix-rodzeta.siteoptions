@@ -24,24 +24,24 @@ function CreateCache($siteOptions, $snippetsCategory) {
 
 	// create section RODZETA_SITE
 	$res = \CIBlockSection::GetList(
-		array("SORT" => "ASC"),
-		array(
+		["SORT" => "ASC"],
+		[
 			"IBLOCK_ID" => $iblockId,
 			"CODE" => "RODZETA_SITE",
-		),
+		],
 		true,
-		array("*")
+		["*"]
 	);
 	$sectionOptions = $res->GetNext();
 	if (empty($sectionOptions["ID"])) {
 		$iblockSection = new \CIBlockSection();
-		$mainSectionId = $iblockSection->Add(array(
+		$mainSectionId = $iblockSection->Add([
 		  "IBLOCK_ID" => $iblockId,
 		  "NAME" => "Пользовательские опции сайта",
 		  "CODE" => "RODZETA_SITE",
 		  "SORT" => 20000,
 			"ACTIVE" => "Y",
-	  ));
+	  ]);
 	  if (!empty($mainSectionId)) {
 	  	Option::set("rodzeta.siteoptions", "section_id", $mainSectionId);
 	  }
@@ -49,7 +49,7 @@ function CreateCache($siteOptions, $snippetsCategory) {
 		$mainSectionId = $sectionOptions["ID"];
 	}
 
-	$options = array();
+	$options = [];
 	foreach ($siteOptions as $v) {
 		$v["CODE"] = trim($v["CODE"]);
 		$v["VALUE"] = trim($v["VALUE"]);
@@ -57,7 +57,7 @@ function CreateCache($siteOptions, $snippetsCategory) {
 		if ($v["CODE"] == "") {
 			continue;
 		}
-		$options["#" . $v["CODE"] . "#"] = array(true, $v["VALUE"], $v["NAME"]);
+		$options["#" . $v["CODE"] . "#"] = [true, $v["VALUE"], $v["NAME"]];
 	}
 
 	// create snippets
@@ -70,19 +70,19 @@ function CreateCache($siteOptions, $snippetsCategory) {
 		mkdir($snippetsCategoryPath);
 	}
 	if (is_dir($snippetsCategoryPath)) {
-		$SNIPPETS = array();
+		$SNIPPETS = [];
 		// read existing snippets to $SNIPPETS array
 		if (file_exists($snippetsPath . "/.content.php")) {
 			include $snippetsPath . "/.content.php";
 		}
-		foreach (array_merge($options, array(
-				"#CURRENT_YEAR#" => array(false, "#CURRENT_YEAR#", "Текущий год"),
-				"#CURRENT_MONTH#" => array(false, "#CURRENT_MONTH#", "Текущий месяц"),
-				"#CURRENT_DAY#" => array(false, "#CURRENT_DAY#", "Текущий день"),
-				"#CURRENT_DATE#" => array(false, "#CURRENT_DATE#", "Текущая дата"),
-			)) as $snippetContent => $snippetInfo) {
+		foreach (array_merge($options, [
+				"#CURRENT_YEAR#" => [false, "#CURRENT_YEAR#", "Текущий год"],
+				"#CURRENT_MONTH#" => [false, "#CURRENT_MONTH#", "Текущий месяц"],
+				"#CURRENT_DAY#" => [false, "#CURRENT_DAY#", "Текущий день"],
+				"#CURRENT_DATE#" => [false, "#CURRENT_DATE#", "Текущая дата"],
+			]) as $snippetContent => $snippetInfo) {
 			$snippetFile = "snippet" . substr($snippetContent, 1, -1) . ".snp";
-			$SNIPPETS[$snippetsCategory . "/" . $snippetFile] = array("title" => $snippetInfo[2]);
+			$SNIPPETS[$snippetsCategory . "/" . $snippetFile] = ["title" => $snippetInfo[2]];
 			file_put_contents($snippetsCategoryPath . "/" . $snippetFile, $snippetContent);
 		}
 		ksort($SNIPPETS);
@@ -94,30 +94,30 @@ function CreateCache($siteOptions, $snippetsCategory) {
 
 	// init from infoblock section
 	$res = \CIBlockElement::GetList(
-		array("SORT" => "ASC"),
-		array(
+		["SORT" => "ASC"],
+		[
 			"IBLOCK_ID" => $iblockId,
 			"SECTION_ID" => $mainSectionId,
 			"ACTIVE" => "Y"
-		),
+		],
 		false,
 		false,
-		array() // fields
+		[] // fields
 	);
 	while ($row = $res->GetNextElement()) {
 		$item = $row->GetFields();
-		foreach (array("NAME", "PREVIEW_TEXT", "DETAIL_TEXT") as $code) {
-			$options["#" . $item["CODE"] . "_" . $code . "#"] = array(false, $item[$code], "");
+		foreach (["NAME", "PREVIEW_TEXT", "DETAIL_TEXT"] as $code) {
+			$options["#" . $item["CODE"] . "_" . $code . "#"] = [false, $item[$code], ""];
 		}
-		foreach (array("PREVIEW_PICTURE", "DETAIL_PICTURE") as $code) {
+		foreach (["PREVIEW_PICTURE", "DETAIL_PICTURE"] as $code) {
 			$img = \CFile::GetFileArray($item[$code]);
 			$options["#" . $item["CODE"] . "_" . $code . "_SRC" . "#"] =
-				array(false, $img["SRC"], "");
+				[false, $img["SRC"], ""];
 			$options["#" . $item["CODE"] . "_" . $code . "_DESCRIPTION" . "#"] =
-				array(false, $img["DESCRIPTION"], "");
+				[false, $img["DESCRIPTION"], ""];
 			$options["#" . $item["CODE"] . "_" . $code . "#"] =
-				array(false, '<img src="' . $img["SRC"] . '" alt="'
-						. htmlspecialchars($img["DESCRIPTION"]) . '">', "");
+				[false, '<img src="' . $img["SRC"] . '" alt="'
+						. htmlspecialchars($img["DESCRIPTION"]) . '">', ""];
 		}
 	}
 

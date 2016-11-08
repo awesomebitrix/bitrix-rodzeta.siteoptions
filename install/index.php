@@ -5,6 +5,8 @@
  * MIT License
  ************************************************************************************************/
 
+// NOTE this one file must compatible with php 5.3
+
 defined('B_PROLOG_INCLUDED') and (B_PROLOG_INCLUDED === true) or die();
 
 use Bitrix\Main\Application;
@@ -16,7 +18,7 @@ Loc::loadMessages(__FILE__);
 
 class rodzeta_siteoptions extends CModule {
 
-	var $MODULE_ID = "rodzeta.siteoptions"; // FIX for bitrix rules
+	var $MODULE_ID = "rodzeta.siteoptions"; // NOTE using "var" for bitrix rules
 
 	public $MODULE_VERSION;
 	public $MODULE_VERSION_DATE;
@@ -31,7 +33,7 @@ class rodzeta_siteoptions extends CModule {
 	//public $NEED_MODULES = array();
 
 	function __construct() {
-		$this->MODULE_ID = "rodzeta.siteoptions"; // NEED for showing module in /bitrix/admin/partner_modules.php?lang=ru
+		$this->MODULE_ID = "rodzeta.siteoptions"; // NOTE for showing module in /bitrix/admin/partner_modules.php?lang=ru
 
 		$arModuleVersion = array();
 		include __DIR__ . "/version.php";
