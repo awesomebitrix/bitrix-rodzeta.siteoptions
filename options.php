@@ -49,7 +49,7 @@ if ($request->isPost() && check_bitrix_sessid()) {
 	if (!empty($save) || !empty($restore)) {
 		Option::set("rodzeta.siteoptions", "iblock_id", (int)$request->getPost("iblock_id"));
 
-		CreateCache($request->getPost("site_options"));
+		CreateCache($request->getPost("site_options"), Loc::getMessage("RODZETA_SITEOPTIONS_CATEGORY_SNIPPETS"));
 
 		\CAdminMessage::showMessage(array(
 	    "MESSAGE" => Loc::getMessage("RODZETA_SITEOPTIONS_OPTIONS_SAVED"),

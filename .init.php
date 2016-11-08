@@ -16,7 +16,7 @@ require LIB . "encoding/php-array.php";
 use Bitrix\Main\Loader;
 use Bitrix\Main\Config\Option;
 
-function CreateCache($siteOptions) {
+function CreateCache($siteOptions, $snippetsCategory) {
 	Loader::includeModule("iblock");
 
 	$basePath = $_SERVER["DOCUMENT_ROOT"];
@@ -58,6 +58,32 @@ function CreateCache($siteOptions) {
 			continue;
 		}
 		$options["#" . $v["CODE"] . "#"] = array(true, $v["VALUE"], $v["NAME"]);
+	}
+
+	// create snippets
+	$snippetsPath = $basePath .  "/bitrix/templates/.default/snippets";;
+	if (!is_dir($snippetsPath)) {
+		mkdir($snippetsPath);
+	}
+	$snippetsCategoryPath = $snippetsPath . "/" . $snippetsCategory;
+	if (!is_dir($snippetsCategoryPath)) {
+		mkdir($snippetsCategoryPath);
+	}
+	if (is_dir($snippetsCategoryPath)) {
+		$SNIPPETS = array();
+		// read existing snippets to $SNIPPETS array
+		if (file_exists($snippetsPath . "/.content.php")) {
+			include $snippetsPath . "/.content.php";
+		}
+		foreach ($options as $snippetContent => $snippetInfo) {
+			$snippetFile = "snippet" . substr($snippetContent, 1, -1) . ".snp";
+			$SNIPPETS[$snippetsCategory . "/" . $snippetFile] = array("title" => $snippetInfo[2]);
+			file_put_contents($snippetsCategoryPath . "/" . $snippetFile, $snippetContent);
+		}
+		file_put_contents($snippetsPath . "/.content.php", '<?php
+			if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true) die();
+			$SNIPPETS = ' . var_export($SNIPPETS, true) . ';'
+		);
 	}
 
 	// init from infoblock section
