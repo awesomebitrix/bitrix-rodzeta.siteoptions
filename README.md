@@ -60,12 +60,12 @@
         }
         /* example data
         $_REQUEST["city"] = "Москва";
-        $GLOBALS["RODZETA"]["DATA_BY_CITY"] = array(
-            "Москва" => array(
+        $GLOBALS["RODZETA"]["DATA_BY_CITY"] = [
+            "Москва" => [
                     "PHONE" => "1234567",
                     "MANAGER" => "Мэнеджер Имя Фамилия",
-            )
-        );
+            ]
+        ];
         */
         if (!empty($_REQUEST["city"]) &&
                 !empty($GLOBALS["RODZETA"]["DATA_BY_CITY"][$_REQUEST["city"]])) {
