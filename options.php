@@ -47,7 +47,8 @@ $tabControl = new \CAdminTabControl("tabControl", [
 
 if ($request->isPost() && check_bitrix_sessid()) {
 	if (!empty($save) || !empty($restore)) {
-		Option::set("rodzeta.siteoptions", "iblock_id", (int)$request->getPost("iblock_id"));
+		Option::set("rodzeta.main", "iblock_services",
+			(int)$request->getPost("iblock_services"));
 
 		CreateCache($request->getPost("site_options"), Loc::getMessage("RODZETA_SITEOPTIONS_CATEGORY_SNIPPETS"));
 
@@ -118,9 +119,9 @@ $tabControl->begin();
 		</td>
 		<td class="adm-detail-content-cell-r" width="50%">
 			<?= GetIBlockDropDownListEx(
-				Option::get("rodzeta.siteoptions", "iblock_id", 1),
+				Option::get("rodzeta.main", "iblock_services", 0),
 				"iblock_type_id",
-				"iblock_id",
+				"iblock_services",
 				[
 					"MIN_PERMISSION" => "R",
 				],

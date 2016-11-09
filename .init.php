@@ -17,10 +17,14 @@ use Bitrix\Main\Loader;
 use Bitrix\Main\Config\Option;
 
 function CreateCache($siteOptions, $snippetsCategory) {
+	$iblockId = Option::get("rodzeta.main", "iblock_services", 0);
+	if ((int)$iblockId == 0) {
+		return;
+	}
+
 	Loader::includeModule("iblock");
 
 	$basePath = $_SERVER["DOCUMENT_ROOT"];
-	$iblockId = Option::get("rodzeta.siteoptions", "iblock_id", 2);
 
 	// create section RODZETA_SITE
 	$res = \CIBlockSection::GetList(
