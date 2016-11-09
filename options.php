@@ -110,7 +110,7 @@ $tabControl->begin();
 	<?php $tabControl->beginNextTab() ?>
 
 	<tr class="heading">
-		<td colspan="2">Настройки для пользовательских опций из инфоблока</td>
+		<td colspan="2">Хранение пользовательских опций</td>
 	</tr>
 
 	<tr>
