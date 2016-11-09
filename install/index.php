@@ -1,11 +1,11 @@
 <?php
-/***********************************************************************************************
+/*******************************************************************************
  * rodzeta.siteoptions - Users site options
  * Copyright 2016 Semenov Roman
  * MIT License
- ************************************************************************************************/
+ ******************************************************************************/
 
-// NOTE this one file must compatible with php 5.3
+// NOTE this file must compatible with php 5.3
 
 defined('B_PROLOG_INCLUDED') and (B_PROLOG_INCLUDED === true) or die();
 
