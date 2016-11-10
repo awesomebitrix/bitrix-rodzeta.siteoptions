@@ -17,7 +17,7 @@ use Bitrix\Main\Loader;
 use Bitrix\Main\Config\Option;
 
 function CreateCache($siteOptions, $snippetsCategory) {
-	$iblockId = Option::get("rodzeta.main", "iblock_services", 0);
+	$iblockId = Option::get("rodzeta.site", "iblock_services", 0);
 	if ((int)$iblockId == 0) {
 		return;
 	}
