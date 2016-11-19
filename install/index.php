@@ -52,6 +52,12 @@ class rodzeta_siteoptions extends CModule {
 	}
 
 	function InstallFiles() {
+		CopyDirFiles(
+			$_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/" . $this->MODULE_ID . "/install/admin/" . $this->MODULE_ID,
+			$_SERVER["DOCUMENT_ROOT"] . "/bitrix/admin/" . $this->MODULE_ID,
+			true, true
+		);
+
 		// copy example if not exists
 		$path = $_SERVER["DOCUMENT_ROOT"] . "/upload/." . $this->MODULE_ID;
 		if (file_exists($path)) {
@@ -59,12 +65,12 @@ class rodzeta_siteoptions extends CModule {
 		} else if (!is_dir($path)) {
 			mkdir($path);
 		}
+
 		return true;
 	}
 
 	function UninstallFiles() {
-		//...
-
+		DeleteDirFilesEx("/bitrix/admin/" . $this->MODULE_ID);
 		return true;
 	}
 

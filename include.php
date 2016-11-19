@@ -7,7 +7,7 @@
 
 namespace Rodzeta\Siteoptions;
 
-defined('B_PROLOG_INCLUDED') and (B_PROLOG_INCLUDED === true) or die();
+defined("B_PROLOG_INCLUDED") and (B_PROLOG_INCLUDED === true) or die();
 
 require __DIR__ . "/.init.php";
 
@@ -20,7 +20,7 @@ EventManager::getInstance()->addEventHandler("main", "OnPanelCreate", function (
 	}
 
 	$link = "javascript:" . $GLOBALS["APPLICATION"]->GetPopupLink([
-		"URL" => "/bitrix/modules/" . APP_ID . "/",
+		"URL" => "/bitrix/modules/admin/" . APP_ID . "/",
 		"PARAMS" => [
 			"resizable" => true,
 			//"width" => 780,
