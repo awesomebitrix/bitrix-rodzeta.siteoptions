@@ -54,7 +54,7 @@ class rodzeta_siteoptions extends CModule {
 	function InstallFiles() {
 		// copy example if not exists
 		$path = $_SERVER["DOCUMENT_ROOT"] . "/upload/." . $this->MODULE_ID;
-		if (!file_exists($path)) {
+		if (file_exists($path)) {
 			unlink($path);
 		} else if (!is_dir($path)) {
 			mkdir($path);
