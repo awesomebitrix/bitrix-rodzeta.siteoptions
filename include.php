@@ -20,7 +20,7 @@ EventManager::getInstance()->addEventHandler("main", "OnPanelCreate", function (
 	}
 
 	$link = "javascript:" . $GLOBALS["APPLICATION"]->GetPopupLink([
-		"URL" => BASE_URL,
+		"URL" => URL_ADMIN,
 		"PARAMS" => [
 			"resizable" => true,
 			//"width" => 780,
