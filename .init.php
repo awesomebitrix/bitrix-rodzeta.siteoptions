@@ -7,6 +7,7 @@
 
 namespace Rodzeta\Siteoptions;
 
+define(__NAMESPACE__ . "\APP_ID", "rodzeta.siteoptions");
 define(__NAMESPACE__ . "\APP", __DIR__ . "/");
 define(__NAMESPACE__ . "\LIB", __DIR__  . "/lib/");
 define(__NAMESPACE__ . "\FILE_OPTIONS", "/upload/.rodzeta.siteoptions.php");

@@ -13,6 +13,34 @@ require __DIR__ . "/.init.php";
 
 use Bitrix\Main\EventManager;
 
+EventManager::getInstance()->addEventHandler("main", "OnPanelCreate", function () {
+	// TODO заменить на определение доступа к редактированию конента
+	if (!$GLOBALS["USER"]->IsAdmin()) {
+	  return;
+	}
+
+	$link = "javascript:" . $GLOBALS["APPLICATION"]->GetPopupLink([
+		"URL" => "/bitrix/modules/" . APP_ID . "/",
+		"PARAMS" => [
+			"resizable" => true,
+			//"width" => 780,
+			//"height" => 570,
+			//"min_width" => 400,
+			//"min_height" => 200,
+			"buttons" => "[BX.CDialog.prototype.btnClose]"
+		]
+	]);
+  $GLOBALS["APPLICATION"]->AddPanelButton([
+		"HREF" => $link,
+		"ICON"  => "bx-panel-site-structure-icon",
+		//"SRC" => "/bitrix/admin/" . APP_ID . "/icon.gif",
+		"TEXT"  => "Редактирование опций сайта",
+		"ALT" => "Редактирование опций сайта",
+		"MAIN_SORT" => 2000,
+		"SORT"      => 10
+	]);
+});
+
 EventManager::getInstance()->addEventHandler("main", "OnBeforeProlog", function () {
 	if (\CSite::InDir("/bitrix/")) {
 		return;
