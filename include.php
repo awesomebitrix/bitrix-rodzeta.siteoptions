@@ -34,8 +34,8 @@ EventManager::getInstance()->addEventHandler("main", "OnPanelCreate", function (
 		"HREF" => $link,
 		"ICON"  => "bx-panel-site-structure-icon",
 		//"SRC" => "/bitrix/admin/" . ID . "/icon.gif",
-		"TEXT"  => "Редактирование опций сайта",
-		"ALT" => "Редактирование опций сайта",
+		"TEXT"  => "Опции сайта",
+		"ALT" => "Опции сайта",
 		"MAIN_SORT" => 2000,
 		"SORT"      => 10
 	]);
