@@ -20,7 +20,7 @@ EventManager::getInstance()->addEventHandler("main", "OnPanelCreate", function (
 	}
 
 	$link = "javascript:" . $GLOBALS["APPLICATION"]->GetPopupLink([
-		"URL" => "/bitrix/modules/admin/" . APP_ID . "/",
+		"URL" => BASE_URL,
 		"PARAMS" => [
 			"resizable" => true,
 			//"width" => 780,
@@ -33,7 +33,7 @@ EventManager::getInstance()->addEventHandler("main", "OnPanelCreate", function (
   $GLOBALS["APPLICATION"]->AddPanelButton([
 		"HREF" => $link,
 		"ICON"  => "bx-panel-site-structure-icon",
-		//"SRC" => "/bitrix/admin/" . APP_ID . "/icon.gif",
+		//"SRC" => "/bitrix/admin/" . ID . "/icon.gif",
 		"TEXT"  => "Редактирование опций сайта",
 		"ALT" => "Редактирование опций сайта",
 		"MAIN_SORT" => 2000,
