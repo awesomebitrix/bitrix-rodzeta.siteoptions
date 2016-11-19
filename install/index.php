@@ -53,11 +53,12 @@ class rodzeta_siteoptions extends CModule {
 
 	function InstallFiles() {
 		// copy example if not exists
-		$fname = $_SERVER["DOCUMENT_ROOT"] . "/upload/." . $this->MODULE_ID . ".php";
-		if (!file_exists($fname)) {
-			copy($_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/" . $this->MODULE_ID . "/install/data/." . $this->MODULE_ID . ".php", $fname);
+		$path = $_SERVER["DOCUMENT_ROOT"] . "/upload/." . $this->MODULE_ID;
+		if (!file_exists($path)) {
+			unlink($path);
+		} else if (!is_dir($path)) {
+			mkdir($path);
 		}
-
 		return true;
 	}
 
