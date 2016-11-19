@@ -51,70 +51,74 @@ if ($formSaved) {
 <form action="" method="post">
 	<?= bitrix_sessid_post() ?>
 
-	<tr>
-		<td colspan="2">
-			<table width="100%" class="rodzeta-siteoptions-table">
-				<tbody>
-					<?php
-					$i = 0;
-					foreach (AppendValues(Options(), 5, [true, null, null]) as $optionCode => $optionValue) {
-						if (empty($optionValue[0])) {
-							continue;
-						}
-						$i++;
-					?>
-						<tr data-idx="<?= $i ?>">
-							<td>
-								<input type="text" placeholder="Код опции"
-									name="site_options[<?= $i ?>][CODE]"
-									value="<?= htmlspecialcharsex(substr($optionCode, 1, -1)) ?>"
-									style="width:96%;">
-							</td>
-							<td>
-								<input type="text" placeholder="Значение опции"
-									name="site_options[<?= $i ?>][VALUE]"
-									value="<?= htmlspecialcharsex($optionValue[1]) ?>"
-									style="width:96%;">
-							</td>
-							<td>
-								<input type="text" placeholder="Название"
-									name="site_options[<?= $i ?>][NAME]"
-									value="<?= htmlspecialcharsex($optionValue[2]) ?>"
-									style="width:96%;">
-							</td>
-						</tr>
-					<?php } ?>
+	<table width="100%">
 
-				</tbody>
-			</table>
-		</td>
-	</tr>
+		<tr>
+			<td colspan="2">
+				<table width="100%" class="rodzeta-siteoptions-table">
+					<tbody>
+						<?php
+						$i = 0;
+						foreach (AppendValues(Options(), 5, [true, null, null]) as $optionCode => $optionValue) {
+							if (empty($optionValue[0])) {
+								continue;
+							}
+							$i++;
+						?>
+							<tr data-idx="<?= $i ?>">
+								<td>
+									<input type="text" placeholder="Код опции"
+										name="site_options[<?= $i ?>][CODE]"
+										value="<?= htmlspecialcharsex(substr($optionCode, 1, -1)) ?>"
+										style="width:96%;">
+								</td>
+								<td>
+									<input type="text" placeholder="Значение опции"
+										name="site_options[<?= $i ?>][VALUE]"
+										value="<?= htmlspecialcharsex($optionValue[1]) ?>"
+										style="width:96%;">
+								</td>
+								<td>
+									<input type="text" placeholder="Название"
+										name="site_options[<?= $i ?>][NAME]"
+										value="<?= htmlspecialcharsex($optionValue[2]) ?>"
+										style="width:96%;">
+								</td>
+							</tr>
+						<?php } ?>
 
-	<?php /* ?>
+					</tbody>
+				</table>
+			</td>
+		</tr>
 
-	<tr class="heading">
-		<td colspan="2">Хранение пользовательских опций</td>
-	</tr>
+		<?php /* ?>
 
-	<tr>
-		<td class="adm-detail-content-cell-l" width="50%">
-			<label>Инфоблок</label>
-		</td>
-		<td class="adm-detail-content-cell-r" width="50%">
-			<?= GetIBlockDropDownListEx(
-				Option::get("rodzeta.site", "iblock_services", 0),
-				"iblock_type_id",
-				"iblock_services",
-				[
-					"MIN_PERMISSION" => "R",
-				],
-				"",
-				""
-			) ?>
-		</td>
-	</tr>
+		<tr class="heading">
+			<td colspan="2">Хранение пользовательских опций</td>
+		</tr>
 
-	<?php */ ?>
+		<tr>
+			<td class="adm-detail-content-cell-l" width="50%">
+				<label>Инфоблок</label>
+			</td>
+			<td class="adm-detail-content-cell-r" width="50%">
+				<?= GetIBlockDropDownListEx(
+					Option::get("rodzeta.site", "iblock_services", 0),
+					"iblock_type_id",
+					"iblock_services",
+					[
+						"MIN_PERMISSION" => "R",
+					],
+					"",
+					""
+				) ?>
+			</td>
+		</tr>
+
+		<?php */ ?>
+
+	</table>
 
 </form>
 
