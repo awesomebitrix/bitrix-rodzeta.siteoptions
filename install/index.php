@@ -7,7 +7,7 @@
 
 // NOTE this file must compatible with php 5.3
 
-defined('B_PROLOG_INCLUDED') and (B_PROLOG_INCLUDED === true) or die();
+defined("B_PROLOG_INCLUDED") and (B_PROLOG_INCLUDED === true) or die();
 
 use Bitrix\Main\Application;
 use Bitrix\Main\Loader;
@@ -57,14 +57,6 @@ class rodzeta_siteoptions extends CModule {
 			$_SERVER["DOCUMENT_ROOT"] . "/bitrix/admin/" . $this->MODULE_ID,
 			true, true
 		);
-
-		// copy example if not exists
-		$path = $_SERVER["DOCUMENT_ROOT"] . "/upload/." . $this->MODULE_ID;
-		if (file_exists($path)) {
-			unlink($path);
-		} else if (!is_dir($path)) {
-			mkdir($path);
-		}
 
 		return true;
 	}

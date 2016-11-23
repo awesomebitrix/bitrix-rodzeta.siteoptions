@@ -11,14 +11,32 @@ define(__NAMESPACE__ . "\ID", "rodzeta.siteoptions");
 define(__NAMESPACE__ . "\URL_ADMIN", "/bitrix/admin/" . ID . "/");
 define(__NAMESPACE__ . "\APP", __DIR__ . "/");
 define(__NAMESPACE__ . "\LIB", __DIR__  . "/lib/");
-define(__NAMESPACE__ . "\FILE_OPTIONS", "/upload/.rodzeta.siteoptions.php");
+define(__NAMESPACE__ . "\FILE_OPTIONS", $_SERVER["DOCUMENT_ROOT"] . "/upload/" . $_SERVER["SERVER_NAME"] . "/." . ID);
 
 require LIB . "encoding/php-array.php";
 
 use Bitrix\Main\Loader;
 use Bitrix\Main\Config\Option;
 
-function CreateCache($siteOptions, $snippetsCategory) {
+function CurrentUrl() {
+	$currentUrl = parse_url($_SERVER["HTTP_REFERER"]);
+	parse_str($currentUrl["query"], $params);
+	return [$_SERVER["SERVER_NAME"], $currentUrl["path"], $params];
+}
+
+function StorageCreate() {
+	if (!is_dir(FILE_OPTIONS)) {
+		mkdir(FILE_OPTIONS, 0700, true);
+	}
+}
+
+function CacheCreate($siteOptions, $snippetsCategory) {
+	echo "<pre>";
+	print_r($siteOptions);
+	var_dump(FILE_OPTIONS);
+	echo "</pre>";
+	return;
+
 	$iblockId = Option::get("rodzeta.site", "iblock_services", 0);
 	if ((int)$iblockId == 0) {
 		return;

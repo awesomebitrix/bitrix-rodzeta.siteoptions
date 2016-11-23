@@ -16,7 +16,7 @@ use Bitrix\Main\IO\Path;
 require $_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/main/include/prolog_admin_before.php";
 //require $_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/main/include/prolog_before.php";
 
-// TODO заменить на определение доступа к редактированию конента
+// TODO заменить на определение доступа к редактированию контента
 // 	if (!$USER->CanDoOperation("rodzeta.siteoptions"))
 if (!$GLOBALS["USER"]->IsAdmin()) {
 	//$APPLICATION->authForm("ACCESS DENIED");
@@ -24,7 +24,6 @@ if (!$GLOBALS["USER"]->IsAdmin()) {
 }
 
 Loader::includeModule("iblock");
-
 //Loc::loadMessages(__FILE__); // так не грузит языковые файлы
 Loc::loadMessages($_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/" . ID . "/admin/" . ID . "/index.php");
 
@@ -32,11 +31,13 @@ $app = Application::getInstance();
 $context = $app->getContext();
 $request = $context->getRequest();
 
+StorageCreate();
+
 $formSaved = check_bitrix_sessid() && $_SERVER["REQUEST_METHOD"] == "POST";
 if ($formSaved) {
 	//Option::set("rodzeta.site", "iblock_services", (int)$request->getPost("iblock_services"));
 
-	CreateCache($request->getPost("site_options"), Loc::getMessage("RODZETA_SITEOPTIONS_CATEGORY_SNIPPETS"));
+	CacheCreate($request->getPost("site_options"), Loc::getMessage("RODZETA_SITEOPTIONS_CATEGORY_SNIPPETS"));
 
 	/*
 	\CAdminMessage::showMessage([
@@ -45,6 +46,8 @@ if ($formSaved) {
   ]);
   */
 }
+
+list($currentHost, $currentUrl, $currentParams) = CurrentUrl();
 
 ?>
 
@@ -55,7 +58,41 @@ if ($formSaved) {
 
 		<tr>
 			<td colspan="2">
-				<table width="100%" class="rodzeta-siteoptions-table">
+
+				<div class="adm-detail-title">
+					Привязываемый url <?= $currentUrl ?>
+					<input type="hidden" name="site_options_url" value="<?= htmlspecialcharsex($currentUrl) ?>">
+				</div>
+				<table width="100%" class="rodzeta-siteoptions-params-table js-table-autoappendrows">
+					<tbody>
+						<?php
+						$i = 0;
+						foreach (AppendValues($currentParams, 1, true) as $optionCode => $optionValue) {
+							$i++;
+						?>
+							<tr data-idx="<?= $i ?>">
+								<td>
+									<input type="text" placeholder="Код параметра"
+										name="site_options_param[<?= $i ?>][CODE]"
+										value="<?= htmlspecialcharsex($optionCode) ?>"
+										style="width:96%;">
+								</td>
+								<td>
+									<input type="text" placeholder="Значение параметра"
+										name="site_options_param[<?= $i ?>][VALUE]"
+										value="<?= htmlspecialcharsex($optionValue) ?>"
+										style="width:96%;">
+								</td>
+							</tr>
+						<?php } ?>
+
+					</tbody>
+				</table>
+
+				<br>
+
+				<div class="adm-detail-title">Список опций</div>
+				<table width="100%" class="rodzeta-siteoptions-table js-table-autoappendrows">
 					<tbody>
 						<?php
 						$i = 0;
@@ -122,7 +159,7 @@ if ($formSaved) {
 
 </form>
 
-<?php if (!empty($formSaved)) { ?>
+<?php if (0 && !empty($formSaved)) { ?>
 
 	<script>
 		// close after submit
@@ -143,15 +180,20 @@ if ($formSaved) {
 
 <?php } ?>
 
-<script>
 
-// TODO use autoappendrows.js
+<?php /* // NOTE external script not work
+<script src="<?= URL_ADMIN ?>/init.js"></script>
+*/ ?>
+<script>
 
 BX.ready(function () {
 	"use strict";
 
-	function makeAutoAppend($table) {
+	// init options
+	//...
 
+	// autoappend rows
+	function makeAutoAppend($table) {
 		function bindEvents($row) {
 			for (let $input of $row.querySelectorAll('input[type="text"]')) {
 				$input.addEventListener("change", function (event) {
@@ -165,20 +207,23 @@ BX.ready(function () {
 					$trLast.innerHTML = $tr.innerHTML;
 					let idx = parseInt($tr.getAttribute("data-idx")) + 1;
 					$trLast.setAttribute("data-idx", idx);
-					for (let $input of $trLast.querySelectorAll('input[type="text"]')) {
-						$input.setAttribute("name", $input.getAttribute("name").replace(/([a-zA-Z0-9])\[\d+\]/, "$1[" + idx + "]"));
+					for (let $input of $trLast.querySelectorAll("input,select")) {
+						let name = $input.getAttribute("name");
+						if (name) {
+							$input.setAttribute("name", name.replace(/([a-zA-Z0-9])\[\d+\]/, "$1[" + idx + "]"));
+						}
 					}
 					bindEvents($trLast);
 				});
 			}
 		}
-
-		for (let $row of document.querySelectorAll(".rodzeta-siteoptions-table tr")) {
+		for (let $row of document.querySelectorAll(".js-table-autoappendrows tr")) {
 			bindEvents($row);
 		}
 	}
-
-	makeAutoAppend(document.querySelector(".rodzeta-siteoptions-table"));
+	for (let $table of document.querySelectorAll(".js-table-autoappendrows")) {
+		makeAutoAppend($table);
+	}
 
 });
 
