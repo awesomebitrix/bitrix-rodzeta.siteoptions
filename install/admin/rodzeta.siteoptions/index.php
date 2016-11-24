@@ -30,14 +30,18 @@ Loc::loadMessages($_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/" . ID . "/admin/
 $app = Application::getInstance();
 $context = $app->getContext();
 $request = $context->getRequest();
+list($currentHost, $currentUrl, $currentParams, $optionsKey, $defaultOptions) = CurrentUrl();
+$usedParams = array_merge($defaultOptions[1], [
+	"utm_term" => true,
+]);
 
-StorageCreate();
+StorageInit();
 
-$formSaved = check_bitrix_sessid() && $_SERVER["REQUEST_METHOD"] == "POST";
+$formSaved = check_bitrix_sessid() && $request->isPost();
 if ($formSaved) {
 	//Option::set("rodzeta.site", "iblock_services", (int)$request->getPost("iblock_services"));
 
-	CacheCreate($request->getPost("site_options"), Loc::getMessage("RODZETA_SITEOPTIONS_CATEGORY_SNIPPETS"));
+	Update($optionsKey, $request->getPostList(), Loc::getMessage("RODZETA_SITEOPTIONS_CATEGORY_SNIPPETS"));
 
 	/*
 	\CAdminMessage::showMessage([
@@ -47,7 +51,10 @@ if ($formSaved) {
   */
 }
 
-list($currentHost, $currentUrl, $currentParams) = CurrentUrl();
+list($currentOptions, $optionParams) = Select($optionsKey);
+if ($optionsKey != KEY_DEFAULT) {
+	// TODO init options
+}
 
 ?>
 
@@ -59,44 +66,44 @@ list($currentHost, $currentUrl, $currentParams) = CurrentUrl();
 		<tr>
 			<td colspan="2">
 
-				<div class="adm-detail-title">
-					Привязываемый url <?= $currentUrl ?>
-					<input type="hidden" name="site_options_url" value="<?= htmlspecialcharsex($currentUrl) ?>">
-				</div>
-				<table width="100%" class="rodzeta-siteoptions-params-table js-table-autoappendrows">
-					<tbody>
-						<?php
-						$i = 0;
-						foreach (AppendValues($currentParams, 1, true) as $optionCode => $optionValue) {
-							$i++;
-						?>
-							<tr data-idx="<?= $i ?>">
-								<td>
-									<input type="text" placeholder="Код параметра"
-										name="site_options_param[<?= $i ?>][CODE]"
-										value="<?= htmlspecialcharsex($optionCode) ?>"
-										style="width:96%;">
-								</td>
-								<td>
-									<input type="text" placeholder="Значение параметра"
-										name="site_options_param[<?= $i ?>][VALUE]"
-										value="<?= htmlspecialcharsex($optionValue) ?>"
-										style="width:96%;">
-								</td>
-							</tr>
-						<?php } ?>
+				<?php if ($optionsKey == KEY_DEFAULT) { ?>
 
-					</tbody>
-				</table>
+					<div class="adm-detail-title">Привязываемые параметры</div>
 
-				<br>
+					<table width="100%" class="rodzeta-siteoptions-params-table js-table-autoappendrows">
+						<tbody>
+							<?php
+							$i = 0;
+							foreach (AppendValues($usedParams, 1, null) as $optionCode => $optionValue) {
+								$i++;
+								if (empty($optionValue)) {
+									$optionCode = "";
+								}
+							?>
+								<tr data-idx="<?= $i ?>">
+									<td>
+										<input type="text" placeholder="Код параметра"
+											name="site_options_param[<?= $i ?>][CODE]"
+											value="<?= htmlspecialcharsex($optionCode) ?>"
+											style="width:98%;">
+									</td>
+								</tr>
+							<?php } ?>
 
-				<div class="adm-detail-title">Список опций</div>
+						</tbody>
+					</table>
+
+					<br>
+
+					<div class="adm-detail-title">Опции</div>
+
+				<?php } ?>
+
 				<table width="100%" class="rodzeta-siteoptions-table js-table-autoappendrows">
 					<tbody>
 						<?php
 						$i = 0;
-						foreach (AppendValues(Options(), 5, [true, null, null]) as $optionCode => $optionValue) {
+						foreach (AppendValues($currentOptions, 5, [true, null, null]) as $optionCode => $optionValue) {
 							if (empty($optionValue[0])) {
 								continue;
 							}
@@ -110,7 +117,7 @@ list($currentHost, $currentUrl, $currentParams) = CurrentUrl();
 										style="width:96%;">
 								</td>
 								<td>
-									<input type="text" placeholder="Значение опции"
+									<input type="text" placeholder="Значение по умолчанию"
 										name="site_options[<?= $i ?>][VALUE]"
 										value="<?= htmlspecialcharsex($optionValue[1]) ?>"
 										style="width:96%;">
@@ -159,7 +166,7 @@ list($currentHost, $currentUrl, $currentParams) = CurrentUrl();
 
 </form>
 
-<?php if (0 && !empty($formSaved)) { ?>
+<?php if ($formSaved) { ?>
 
 	<script>
 		// close after submit

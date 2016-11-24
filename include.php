@@ -45,7 +45,11 @@ EventManager::getInstance()->addEventHandler("main", "OnBeforeProlog", function 
 	if (\CSite::InDir("/bitrix/")) {
 		return;
 	}
-	$GLOBALS["rodzeta.siteoptions"] = Options();
+	list($currentHost, $currentUrl, $currentParams, $optionsKey, $defaultOptions) = CurrentUrl();
+	$GLOBALS["rodzeta.siteoptions"] = array_merge(
+		$defaultOptions[0],
+		Select($optionsKey)[0]
+	);
 });
 
 EventManager::getInstance()->addEventHandler("main", "OnEndBufferContent", function (&$content) {
@@ -56,7 +60,6 @@ EventManager::getInstance()->addEventHandler("main", "OnEndBufferContent", funct
 	if ($APPLICATION->GetPublicShowMode() != "view") {
 		return;
 	}
-
 	// predefined site options
 	$GLOBALS["rodzeta.siteoptions"]["#CURRENT_YEAR#"] = [false, date("Y"), ""];
 	$GLOBALS["rodzeta.siteoptions"]["#CURRENT_MONTH#"] = [false, date("m"), ""];

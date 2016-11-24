@@ -12,6 +12,7 @@ define(__NAMESPACE__ . "\URL_ADMIN", "/bitrix/admin/" . ID . "/");
 define(__NAMESPACE__ . "\APP", __DIR__ . "/");
 define(__NAMESPACE__ . "\LIB", __DIR__  . "/lib/");
 define(__NAMESPACE__ . "\FILE_OPTIONS", $_SERVER["DOCUMENT_ROOT"] . "/upload/" . $_SERVER["SERVER_NAME"] . "/." . ID);
+define(__NAMESPACE__ . "\KEY_DEFAULT", "default");
 
 require LIB . "encoding/php-array.php";
 
@@ -21,30 +22,36 @@ use Bitrix\Main\Config\Option;
 function CurrentUrl() {
 	$currentUrl = parse_url($_SERVER["HTTP_REFERER"]);
 	parse_str($currentUrl["query"], $params);
-	return [$_SERVER["SERVER_NAME"], $currentUrl["path"], $params];
+	$default = Select(KEY_DEFAULT);
+	if ($currentUrl["path"] == "/" && empty($params)) {
+		$key = KEY_DEFAULT;
+	} else {
+		// reset not defined params
+		foreach ($params as $k => $v) {
+			if (empty($default[1][$k])) {
+				unset($params[$k]);
+			}
+		}
+		ksort($params);
+		$key = sha1($currentUrl["path"] . "?" . http_build_query($params));
+	}
+	return [$_SERVER["SERVER_NAME"], $currentUrl["path"], $params, $key, $default];
 }
 
-function StorageCreate() {
+function StorageInit() {
 	if (!is_dir(FILE_OPTIONS)) {
 		mkdir(FILE_OPTIONS, 0700, true);
 	}
 }
 
-function CacheCreate($siteOptions, $snippetsCategory) {
-	echo "<pre>";
-	print_r($siteOptions);
-	var_dump(FILE_OPTIONS);
-	echo "</pre>";
-	return;
-
+function Update($key, $data, $snippetsCategory) {
+	/*
 	$iblockId = Option::get("rodzeta.site", "iblock_services", 0);
 	if ((int)$iblockId == 0) {
 		return;
 	}
 
 	Loader::includeModule("iblock");
-
-	$basePath = $_SERVER["DOCUMENT_ROOT"];
 
 	// create section RODZETA_SITE
 	$res = \CIBlockSection::GetList(
@@ -72,9 +79,10 @@ function CacheCreate($siteOptions, $snippetsCategory) {
 	} else {
 		$mainSectionId = $sectionOptions["ID"];
 	}
+	*/
 
 	$options = [];
-	foreach ($siteOptions as $v) {
+	foreach ($data["site_options"] as $v) {
 		$v["CODE"] = trim($v["CODE"]);
 		$v["VALUE"] = trim($v["VALUE"]);
 		$v["NAME"] = trim($v["NAME"]);
@@ -84,8 +92,18 @@ function CacheCreate($siteOptions, $snippetsCategory) {
 		$options["#" . $v["CODE"] . "#"] = [true, $v["VALUE"], $v["NAME"]];
 	}
 
+	$optionsParam = [];
+	foreach ($data["site_options_param"] as $v) {
+		$v["CODE"] = trim($v["CODE"]);
+		if ($v["CODE"] == "") {
+			continue;
+		}
+		$optionsParam[$v["CODE"]] = true;
+	}
+
+	/*
 	// create snippets
-	$snippetsPath = $basePath .  "/bitrix/templates/.default/snippets";;
+	$snippetsPath = $_SERVER["DOCUMENT_ROOT"] .  "/bitrix/templates/.default/snippets";;
 	if (!is_dir($snippetsPath)) {
 		mkdir($snippetsPath);
 	}
@@ -118,7 +136,9 @@ function CacheCreate($siteOptions, $snippetsCategory) {
 			$SNIPPETS = ' . var_export($SNIPPETS, true) . ';'
 		);
 	}
+	*/
 
+	/*
 	// init from infoblock section
 	$res = \CIBlockElement::GetList(
 		["SORT" => "ASC"],
@@ -147,12 +167,17 @@ function CacheCreate($siteOptions, $snippetsCategory) {
 						. htmlspecialchars($img["DESCRIPTION"]) . '">', ""];
 		}
 	}
+	*/
 
-	\Encoding\PhpArray\Write($basePath . FILE_OPTIONS, $options);
+	\Encoding\PhpArray\Write(FILE_OPTIONS . "/" . $key . ".php", [
+		$options,
+		$optionsParam
+	]);
 }
 
-function Options() {
-	return include $_SERVER["DOCUMENT_ROOT"] . FILE_OPTIONS;
+function Select($key) {
+	$fname = FILE_OPTIONS . "/" . $key . ".php";
+	return is_readable($fname)? include $fname : [[], []];
 }
 
 function AppendValues($data, $n, $v) {
