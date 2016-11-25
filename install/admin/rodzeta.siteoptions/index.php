@@ -191,12 +191,6 @@ list($currentOptions, $optionParams) = Select($optionsKey);
 
 		<?php */ ?>
 
-		<tr colspan="2">
-			<td>
-				<input type="text" value="<?= $optionsKey ?>" readonly style="width:96%;">
-			</td>
-		</tr>
-
 	</table>
 
 </form>
