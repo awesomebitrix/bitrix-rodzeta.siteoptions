@@ -45,11 +45,13 @@ EventManager::getInstance()->addEventHandler("main", "OnBeforeProlog", function 
 	if (\CSite::InDir("/bitrix/")) {
 		return;
 	}
-	list($currentHost, $currentUrl, $currentParams, $optionsKey, $defaultOptions) = CurrentUrl();
-	$GLOBALS["rodzeta.siteoptions"] = array_merge(
-		$defaultOptions[0],
-		Select($optionsKey)[0]
-	);
+	list($currentHost, $currentUrl, $currentParams, $optionsKey, $defaultOptions) =
+		UrlInfo($_SERVER["REQUEST_URI"]);
+	foreach (Select($optionsKey)[0] as $k => $v) {
+		// set value from current url options
+		$defaultOptions[0][$k][1] = $v[1];
+	}
+	$GLOBALS["rodzeta.siteoptions"] = $defaultOptions[0];
 });
 
 EventManager::getInstance()->addEventHandler("main", "OnEndBufferContent", function (&$content) {

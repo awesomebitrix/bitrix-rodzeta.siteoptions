@@ -29,7 +29,8 @@ Loc::loadMessages($_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/" . ID . "/admin/
 $app = Application::getInstance();
 $context = $app->getContext();
 $request = $context->getRequest();
-list($currentHost, $currentUrl, $currentParams, $optionsKey, $defaultOptions) = CurrentUrl();
+list($currentHost, $currentUrl, $currentParams, $optionsKey, $defaultOptions) =
+	UrlInfo($_SERVER["HTTP_REFERER"]);
 $usedParams = array_merge($defaultOptions[1], [
 	"utm_term" => true,
 ]);
@@ -189,6 +190,12 @@ list($currentOptions, $optionParams) = Select($optionsKey);
 		</tr>
 
 		<?php */ ?>
+
+		<tr colspan="2">
+			<td>
+				<input type="text" value="<?= $optionsKey ?>" readonly style="width:96%;">
+			</td>
+		</tr>
 
 	</table>
 

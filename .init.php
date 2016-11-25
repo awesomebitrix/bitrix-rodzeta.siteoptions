@@ -19,8 +19,8 @@ require LIB . "encoding/php-array.php";
 //use Bitrix\Main\Loader;
 use Bitrix\Main\Config\Option;
 
-function CurrentUrl() {
-	$currentUrl = parse_url($_SERVER["HTTP_REFERER"]);
+function UrlInfo($url) {
+	$currentUrl = parse_url($url);
 	parse_str($currentUrl["query"], $params);
 	$default = Select(KEY_DEFAULT);
 	if ($currentUrl["path"] == "/" && empty($params)) {
