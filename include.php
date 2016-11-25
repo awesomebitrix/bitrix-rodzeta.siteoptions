@@ -33,7 +33,7 @@ EventManager::getInstance()->addEventHandler("main", "OnPanelCreate", function (
   $GLOBALS["APPLICATION"]->AddPanelButton([
 		"HREF" => $link,
 		"ICON"  => "bx-panel-site-structure-icon",
-		//"SRC" => "/bitrix/admin/" . ID . "/icon.gif",
+		//"SRC" => URL_ADMIN . "/icon.gif",
 		"TEXT"  => "Опции сайта",
 		"ALT" => "Опции сайта",
 		"MAIN_SORT" => 2000,
