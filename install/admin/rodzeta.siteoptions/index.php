@@ -10,8 +10,7 @@ namespace Rodzeta\Siteoptions;
 use Bitrix\Main\Application;
 use Bitrix\Main\Config\Option;
 use Bitrix\Main\Localization\Loc;
-use Bitrix\Main\Loader;
-use Bitrix\Main\IO\Path;
+//use Bitrix\Main\Loader;
 
 require $_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/main/include/prolog_admin_before.php";
 //require $_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/main/include/prolog_before.php";
@@ -23,7 +22,7 @@ if (!$GLOBALS["USER"]->IsAdmin()) {
   return;
 }
 
-Loader::includeModule("iblock");
+//Loader::includeModule("iblock");
 //Loc::loadMessages(__FILE__); // так не грузит языковые файлы
 Loc::loadMessages($_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/" . ID . "/admin/" . ID . "/index.php");
 
@@ -52,9 +51,6 @@ if ($formSaved) {
 }
 
 list($currentOptions, $optionParams) = Select($optionsKey);
-if ($optionsKey != KEY_DEFAULT) {
-	// TODO init options
-}
 
 ?>
 
@@ -94,45 +90,77 @@ if ($optionsKey != KEY_DEFAULT) {
 					</table>
 
 					<br>
-
 					<div class="adm-detail-title">Опции</div>
+
+					<table width="100%" class="rodzeta-siteoptions-table js-table-autoappendrows">
+						<tbody>
+							<?php
+							$i = 0;
+							foreach (AppendValues($currentOptions, 5, [true, null, null]) as $optionCode => $optionValue) {
+								if (empty($optionValue[0])) {
+									continue;
+								}
+								$i++;
+							?>
+								<tr data-idx="<?= $i ?>">
+									<td>
+										<input type="text" placeholder="Код опции"
+											name="site_options[<?= $i ?>][CODE]"
+											value="<?= htmlspecialcharsex(substr($optionCode, 1, -1)) ?>"
+											style="width:96%;">
+									</td>
+									<td>
+										<input type="text" placeholder="Значение по умолчанию"
+											name="site_options[<?= $i ?>][VALUE]"
+											value="<?= htmlspecialcharsex($optionValue[1]) ?>"
+											style="width:96%;">
+									</td>
+									<td>
+										<input type="text" placeholder="Название"
+											name="site_options[<?= $i ?>][NAME]"
+											value="<?= htmlspecialcharsex($optionValue[2]) ?>"
+											style="width:96%;">
+									</td>
+								</tr>
+							<?php } ?>
+
+						</tbody>
+					</table>
+
+				<?php } else { ?>
+
+					<table width="100%" class="rodzeta-siteoptions-table">
+						<tbody>
+							<?php
+							$i = 0;
+							foreach (array_merge($defaultOptions[0], $currentOptions) as $optionCode => $optionValue) {
+								if (!isset($currentOptions[$optionCode])) {
+									$defaultValue = $optionValue[1];
+									$optionValue[1] = "";
+								}
+								$i++;
+							?>
+								<tr data-idx="<?= $i ?>">
+									<td class="adm-detail-content-cell-l">
+										<b><?= $defaultOptions[0][$optionCode][2] ?></b>
+										<input type="hidden"
+											name="site_options[<?= $i ?>][CODE]"
+											value="<?= htmlspecialcharsex(substr($optionCode, 1, -1)) ?>">
+									</td>
+									<td class="adm-detail-content-cell-r">
+										<input type="text" placeholder="<?= htmlspecialcharsex($defaultValue) ?>"
+											name="site_options[<?= $i ?>][VALUE]"
+											value="<?= htmlspecialcharsex($optionValue[1]) ?>"
+											style="width:96%;">
+									</td>
+								</tr>
+							<?php } ?>
+
+						</tbody>
+					</table>
 
 				<?php } ?>
 
-				<table width="100%" class="rodzeta-siteoptions-table js-table-autoappendrows">
-					<tbody>
-						<?php
-						$i = 0;
-						foreach (AppendValues($currentOptions, 5, [true, null, null]) as $optionCode => $optionValue) {
-							if (empty($optionValue[0])) {
-								continue;
-							}
-							$i++;
-						?>
-							<tr data-idx="<?= $i ?>">
-								<td>
-									<input type="text" placeholder="Код опции"
-										name="site_options[<?= $i ?>][CODE]"
-										value="<?= htmlspecialcharsex(substr($optionCode, 1, -1)) ?>"
-										style="width:96%;">
-								</td>
-								<td>
-									<input type="text" placeholder="Значение по умолчанию"
-										name="site_options[<?= $i ?>][VALUE]"
-										value="<?= htmlspecialcharsex($optionValue[1]) ?>"
-										style="width:96%;">
-								</td>
-								<td>
-									<input type="text" placeholder="Название"
-										name="site_options[<?= $i ?>][NAME]"
-										value="<?= htmlspecialcharsex($optionValue[2]) ?>"
-										style="width:96%;">
-								</td>
-							</tr>
-						<?php } ?>
-
-					</tbody>
-				</table>
 			</td>
 		</tr>
 
