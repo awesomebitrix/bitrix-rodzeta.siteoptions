@@ -16,7 +16,7 @@ define(__NAMESPACE__ . "\KEY_DEFAULT", "default");
 
 require LIB . "encoding/php-array.php";
 
-use Bitrix\Main\Loader;
+//use Bitrix\Main\Loader;
 use Bitrix\Main\Config\Option;
 
 function CurrentUrl() {
@@ -82,25 +82,30 @@ function Update($key, $data, $snippetsCategory) {
 	*/
 
 	$options = [];
-	foreach ($data["site_options"] as $v) {
-		$v["CODE"] = trim($v["CODE"]);
-		$v["VALUE"] = trim($v["VALUE"]);
-		$v["NAME"] = trim($v["NAME"]);
-		if ($v["CODE"] == "") {
-			continue;
+	if (!empty($data["site_options"])) {
+		foreach ($data["site_options"] as $v) {
+			$v["CODE"] = trim($v["CODE"]);
+			$v["VALUE"] = trim($v["VALUE"]);
+			$v["NAME"] = trim($v["NAME"]);
+			if ($v["CODE"] == "") {
+				continue;
+			}
+			$options["#" . $v["CODE"] . "#"] = [true, $v["VALUE"], $v["NAME"]];
 		}
-		$options["#" . $v["CODE"] . "#"] = [true, $v["VALUE"], $v["NAME"]];
 	}
 
 	$optionsParam = [];
-	foreach ($data["site_options_param"] as $v) {
-		$v["CODE"] = trim($v["CODE"]);
-		if ($v["CODE"] == "") {
-			continue;
+	if (!empty($data["site_options_param"])) {
+		foreach ($data["site_options_param"] as $v) {
+			$v["CODE"] = trim($v["CODE"]);
+			if ($v["CODE"] == "") {
+				continue;
+			}
+			$optionsParam[$v["CODE"]] = true;
 		}
-		$optionsParam[$v["CODE"]] = true;
 	}
 
+	// TODO snippets
 	/*
 	// create snippets
 	$snippetsPath = $_SERVER["DOCUMENT_ROOT"] .  "/bitrix/templates/.default/snippets";;
