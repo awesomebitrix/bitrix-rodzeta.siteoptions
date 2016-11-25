@@ -26,9 +26,9 @@ function UrlInfo($url) {
 	if ($currentUrl["path"] == "/" && empty($params)) {
 		$key = KEY_DEFAULT;
 	} else {
-		// reset not defined params
 		foreach ($params as $k => $v) {
-			if (empty($default[1][$k])) {
+			// reset not defined params and empty params
+			if (empty($default[1][$k]) || trim($v) == "") {
 				unset($params[$k]);
 			}
 		}
