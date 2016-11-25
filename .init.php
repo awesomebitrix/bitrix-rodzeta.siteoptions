@@ -90,6 +90,11 @@ function Update($key, $data, $snippetsCategory) {
 			if ($v["CODE"] == "") {
 				continue;
 			}
+			if ($key != KEY_DEFAULT) {
+				if ($v["VALUE"] == "") {
+					continue;
+				}
+			}
 			$options["#" . $v["CODE"] . "#"] = [true, $v["VALUE"], $v["NAME"]];
 		}
 	}
