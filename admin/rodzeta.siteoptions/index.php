@@ -42,6 +42,13 @@ if ($formSaved) {
 
 list($currentOptions, $optionParams) = Select($optionsKey);
 
+$currentOptions = array_merge([
+	"#META_TITLE#" => [true, "", "Заголовок страницы (тег TITLE) META"],
+	"#META_H1#" => [true, "", "Заголовок (тег H1) META"],
+	"#META_KEYWORDS#" => [true, "", "Ключевые слова META"],
+	"#META_DESCRIPTION#" => [true, "", "Описание META"],
+], $currentOptions);
+
 ?>
 
 <form action="" method="post">
@@ -97,6 +104,7 @@ list($currentOptions, $optionParams) = Select($optionsKey);
 										<input type="text" placeholder="Код опции"
 											name="site_options[<?= $i ?>][CODE]"
 											value="<?= htmlspecialcharsex(substr($optionCode, 1, -1)) ?>"
+											<?= substr($optionCode, 0, 6) == "#META_" ? "readonly" : "" ?>
 											style="width:96%;">
 									</td>
 									<td>
