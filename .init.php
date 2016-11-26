@@ -7,6 +7,8 @@
 
 namespace Rodzeta\Siteoptions;
 
+use Bitrix\Main\Config\Option;
+
 define(__NAMESPACE__ . "\ID", "rodzeta.siteoptions");
 define(__NAMESPACE__ . "\URL_ADMIN", "/bitrix/admin/" . ID . "/");
 define(__NAMESPACE__ . "\APP", __DIR__ . "/");
@@ -15,9 +17,6 @@ define(__NAMESPACE__ . "\FILE_OPTIONS", $_SERVER["DOCUMENT_ROOT"] . "/upload/" .
 define(__NAMESPACE__ . "\KEY_DEFAULT", "default");
 
 require LIB . "encoding/php-array.php";
-
-//use Bitrix\Main\Loader;
-use Bitrix\Main\Config\Option;
 
 function UrlInfo($url) {
 	$currentUrl = parse_url($url);
@@ -42,77 +41,13 @@ function StorageInit() {
 	if (!is_dir(FILE_OPTIONS)) {
 		mkdir(FILE_OPTIONS, 0700, true);
 	}
+	$fname = FILE_OPTIONS . "/" . KEY_DEFAULT . ".php";
+	if (!file_exists($fname)) {
+		copy(__DIR__ . "/install/data/default.php", $fname);
+	}
 }
 
-function Update($key, $data, $snippetsCategory) {
-	/*
-	$iblockId = Option::get("rodzeta.site", "iblock_services", 0);
-	if ((int)$iblockId == 0) {
-		return;
-	}
-
-	Loader::includeModule("iblock");
-
-	// create section RODZETA_SITE
-	$res = \CIBlockSection::GetList(
-		["SORT" => "ASC"],
-		[
-			"IBLOCK_ID" => $iblockId,
-			"CODE" => "RODZETA_SITE",
-		],
-		true,
-		["*"]
-	);
-	$sectionOptions = $res->GetNext();
-	if (empty($sectionOptions["ID"])) {
-		$iblockSection = new \CIBlockSection();
-		$mainSectionId = $iblockSection->Add([
-		  "IBLOCK_ID" => $iblockId,
-		  "NAME" => "Пользовательские опции сайта",
-		  "CODE" => "RODZETA_SITE",
-		  "SORT" => 20000,
-			"ACTIVE" => "Y",
-	  ]);
-	  if (!empty($mainSectionId)) {
-	  	Option::set("rodzeta.siteoptions", "section_id", $mainSectionId);
-	  }
-	} else {
-		$mainSectionId = $sectionOptions["ID"];
-	}
-	*/
-
-	$options = [];
-	if (!empty($data["site_options"])) {
-		foreach ($data["site_options"] as $v) {
-			$v["CODE"] = trim($v["CODE"]);
-			$v["VALUE"] = trim($v["VALUE"]);
-			$v["NAME"] = trim($v["NAME"]);
-			if ($v["CODE"] == "") {
-				continue;
-			}
-			if ($key != KEY_DEFAULT) {
-				if ($v["VALUE"] == "") {
-					continue;
-				}
-			}
-			$options["#" . $v["CODE"] . "#"] = [true, $v["VALUE"], $v["NAME"]];
-		}
-	}
-
-	$optionsParam = [];
-	if (!empty($data["site_options_param"])) {
-		foreach ($data["site_options_param"] as $v) {
-			$v["CODE"] = trim($v["CODE"]);
-			if ($v["CODE"] == "") {
-				continue;
-			}
-			$optionsParam[$v["CODE"]] = true;
-		}
-	}
-
-	// TODO snippets
-	/*
-	// create snippets
+function SnippetsCreate($options, $snippetsCategory) {
 	$snippetsPath = $_SERVER["DOCUMENT_ROOT"] .  "/bitrix/templates/.default/snippets";;
 	if (!is_dir($snippetsPath)) {
 		mkdir($snippetsPath);
@@ -146,38 +81,41 @@ function Update($key, $data, $snippetsCategory) {
 			$SNIPPETS = ' . var_export($SNIPPETS, true) . ';'
 		);
 	}
-	*/
+}
 
-	/*
-	// init from infoblock section
-	$res = \CIBlockElement::GetList(
-		["SORT" => "ASC"],
-		[
-			"IBLOCK_ID" => $iblockId,
-			"SECTION_ID" => $mainSectionId,
-			"ACTIVE" => "Y"
-		],
-		false,
-		false,
-		[] // fields
-	);
-	while ($row = $res->GetNextElement()) {
-		$item = $row->GetFields();
-		foreach (["NAME", "PREVIEW_TEXT", "DETAIL_TEXT"] as $code) {
-			$options["#" . $item["CODE"] . "_" . $code . "#"] = [false, $item[$code], ""];
-		}
-		foreach (["PREVIEW_PICTURE", "DETAIL_PICTURE"] as $code) {
-			$img = \CFile::GetFileArray($item[$code]);
-			$options["#" . $item["CODE"] . "_" . $code . "_SRC" . "#"] =
-				[false, $img["SRC"], ""];
-			$options["#" . $item["CODE"] . "_" . $code . "_DESCRIPTION" . "#"] =
-				[false, $img["DESCRIPTION"], ""];
-			$options["#" . $item["CODE"] . "_" . $code . "#"] =
-				[false, '<img src="' . $img["SRC"] . '" alt="'
-						. htmlspecialchars($img["DESCRIPTION"]) . '">', ""];
+function Update($key, $data, $snippetsCategory) {
+	$options = [];
+	if (!empty($data["site_options"])) {
+		foreach ($data["site_options"] as $v) {
+			$v["CODE"] = trim($v["CODE"]);
+			$v["VALUE"] = trim($v["VALUE"]);
+			$v["NAME"] = trim($v["NAME"]);
+			if ($v["CODE"] == "") {
+				continue;
+			}
+			if ($key != KEY_DEFAULT) {
+				if ($v["VALUE"] == "") {
+					continue;
+				}
+			}
+			$options["#" . $v["CODE"] . "#"] = [true, $v["VALUE"], $v["NAME"]];
 		}
 	}
-	*/
+
+	$optionsParam = [];
+	if (!empty($data["site_options_param"])) {
+		foreach ($data["site_options_param"] as $v) {
+			$v["CODE"] = trim($v["CODE"]);
+			if ($v["CODE"] == "") {
+				continue;
+			}
+			$optionsParam[$v["CODE"]] = true;
+		}
+	}
+
+	if ($key == KEY_DEFAULT) {
+		SnippetsCreate($options, $snippetsCategory);
+	}
 
 	\Encoding\PhpArray\Write(FILE_OPTIONS . "/" . $key . ".php", [
 		$options,
@@ -191,8 +129,8 @@ function Select($key) {
 }
 
 function AppendValues($data, $n, $v) {
+	yield from $data;
 	for ($i = 0; $i < $n; $i++) {
-		$data[] = $v;
+		yield  $v;
 	}
-	return $data;
 }

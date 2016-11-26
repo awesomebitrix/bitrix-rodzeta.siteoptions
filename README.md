@@ -5,7 +5,7 @@
 
 Данный модуль позволяет быстро модифицировать и переносить основные данные - такие как: номер телефона, адрес, режим работы, ссылки на группы в соц. сетях и т.п. на всех страницах сайта (можно вставлять в любое место используемое для вывода на сайте: содержимое полей инфоблоков, содержимое страницы, файлы шаблонов и т.п.).
 
-Так же модуль позволяет привязывать свой набор опций (например метатеги и заголовок страницы) для произвольного урл и выбранных параметров. 
+Так же модуль позволяет привязывать свой набор опций (например метатеги и заголовок страницы) для произвольного урл и выбранных параметров.
 
 **Модуль поддерживает разделение данных на уровне доменов, без необходимости настройки многосайтовости и покупки лицензий на дополнительные сайты.**
 
@@ -14,8 +14,6 @@
 Основной список опций и параметров задается с главной страницы (например http://rodzeta.ru). Опции c заданными названиями так же будут доступны как снипеты в визуальном редакторе.
 
 Значения опций для конкретной страницы и параметров задаются на странице с данным урл (например http://rodzeta.ru/?utm_term=Уголок Потребителя).
-
-Опции хранятся в виде файла с php-массивом, что удобно для версионирования и редактирования программистом.
 
 ### Предустановленные опции сайта
 
@@ -44,20 +42,6 @@
 </div>
 ```
 
-~~### Пример опций из инфоблока
-
-Для элемента инфоблока с кодом HOME создаются опции, которые можно использовать для хранения заданного типа значений:
-
-    #HOME_NAME#
-    #HOME_PREVIEW_TEXT#
-    #HOME_DETAIL_TEXT#
-    #HOME_PREVIEW_PICTURE_SRC#
-    #HOME_PREVIEW_PICTURE_DESCRIPTION#
-    #HOME_PREVIEW_PICTURE#
-    #HOME_DETAIL_PICTURE_SRC#
-    #HOME_DETAIL_PICTURE_DESCRIPTION#
-    #HOME_DETAIL_PICTURE#~~
-
 ### Пример переопределения опции на свое значение - например подмена номера телефона в зависимости от города
 
 Добавить свой обработчик в php_interface/init.php или модуль
@@ -66,11 +50,12 @@
 use Bitrix\Main\EventManager;
 
 EventManager::getInstance()->addEventHandler("main", "OnProlog", function () {
-    if (CSite::InDir("/bitrix/")) {
+    if (\CSite::InDir("/bitrix/")) {
         return;
     }
+
     /* example data
-    $_REQUEST["city"] = "Москва";
+    $_COOKIE["city"] = "Москва";
     $GLOBALS["RODZETA"]["DATA_BY_CITY"] = [
         "Москва" => [
                 "PHONE" => "1234567",
@@ -78,9 +63,10 @@ EventManager::getInstance()->addEventHandler("main", "OnProlog", function () {
         ]
     ];
     */
-    if (!empty($_REQUEST["city"]) &&
-            !empty($GLOBALS["RODZETA"]["DATA_BY_CITY"][$_REQUEST["city"]])) {
-        $content = $GLOBALS["RODZETA"]["DATA_BY_CITY"][$_REQUEST["city"]];
+    
+    if (!empty($_COOKIE["city"]) &&
+            !empty($GLOBALS["RODZETA"]["DATA_BY_CITY"][$_COOKIE["city"]])) {
+        $content = $GLOBALS["RODZETA"]["DATA_BY_CITY"][$_COOKIE["city"]];
         if (!empty($content["PHONE"])) {
             $GLOBALS["rodzeta.siteoptions"]["#PHONE#"] = $content["PHONE"];
         }

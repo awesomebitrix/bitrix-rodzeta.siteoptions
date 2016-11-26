@@ -9,9 +9,9 @@ namespace Rodzeta\Siteoptions;
 
 defined("B_PROLOG_INCLUDED") and (B_PROLOG_INCLUDED === true) or die();
 
-require __DIR__ . "/.init.php";
-
 use Bitrix\Main\EventManager;
+
+require __DIR__ . "/.init.php";
 
 EventManager::getInstance()->addEventHandler("main", "OnPanelCreate", function () {
 	// TODO заменить на определение доступа к редактированию конента
@@ -58,8 +58,7 @@ EventManager::getInstance()->addEventHandler("main", "OnEndBufferContent", funct
 	if (\CSite::InDir("/bitrix/")) {
 		return;
 	}
-	global $APPLICATION;
-	if ($APPLICATION->GetPublicShowMode() != "view") {
+	if ($GLOBALS["APPLICATION"]->GetPublicShowMode() != "view") {
 		return;
 	}
 	// predefined site options
