@@ -10,7 +10,6 @@ namespace Rodzeta\Siteoptions;
 use Bitrix\Main\Application;
 use Bitrix\Main\Config\Option;
 use Bitrix\Main\Localization\Loc;
-//use Bitrix\Main\Loader;
 
 require $_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/main/include/prolog_admin_before.php";
 //require $_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/main/include/prolog_before.php";
@@ -22,9 +21,8 @@ if (!$GLOBALS["USER"]->IsAdmin()) {
   return;
 }
 
-//Loader::includeModule("iblock");
-//Loc::loadMessages(__FILE__); // так не грузит языковые файлы
-Loc::loadMessages($_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/" . ID . "/admin/" . ID . "/index.php");
+Loc::loadMessages(__FILE__);
+//Loc::loadMessages($_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/" . ID . "/admin/" . ID . "/index.php");
 
 $app = Application::getInstance();
 $context = $app->getContext();
@@ -39,16 +37,7 @@ StorageInit();
 
 $formSaved = check_bitrix_sessid() && $request->isPost();
 if ($formSaved) {
-	//Option::set("rodzeta.site", "iblock_services", (int)$request->getPost("iblock_services"));
-
 	Update($optionsKey, $request->getPostList(), Loc::getMessage("RODZETA_SITEOPTIONS_CATEGORY_SNIPPETS"));
-
-	/*
-	\CAdminMessage::showMessage([
-    "MESSAGE" => Loc::getMessage("RODZETA_SITEOPTIONS_OPTIONS_SAVED"),
-    "TYPE" => "OK",
-  ]);
-  */
 }
 
 list($currentOptions, $optionParams) = Select($optionsKey);
@@ -164,32 +153,6 @@ list($currentOptions, $optionParams) = Select($optionsKey);
 
 			</td>
 		</tr>
-
-		<?php /* ?>
-
-		<tr class="heading">
-			<td colspan="2">Хранение пользовательских опций</td>
-		</tr>
-
-		<tr>
-			<td class="adm-detail-content-cell-l" width="50%">
-				<label>Инфоблок</label>
-			</td>
-			<td class="adm-detail-content-cell-r" width="50%">
-				<?= GetIBlockDropDownListEx(
-					Option::get("rodzeta.site", "iblock_services", 0),
-					"iblock_type_id",
-					"iblock_services",
-					[
-						"MIN_PERMISSION" => "R",
-					],
-					"",
-					""
-				) ?>
-			</td>
-		</tr>
-
-		<?php */ ?>
 
 	</table>
 
