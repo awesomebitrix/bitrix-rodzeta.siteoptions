@@ -54,6 +54,24 @@ EventManager::getInstance()->addEventHandler("main", "OnBeforeProlog", function 
 	$GLOBALS["rodzeta.siteoptions"] = $defaultOptions[0];
 });
 
+EventManager::getInstance()->addEventHandler("main", "OnEpilog", function () {
+	if (\CSite::InDir("/bitrix/")) {
+		return;
+	}
+	if (!empty($GLOBALS["rodzeta.siteoptions"]["#META_TITLE#"][1])) {
+		$GLOBALS["APPLICATION"]->SetPageProperty("title", $GLOBALS["rodzeta.siteoptions"]["#META_TITLE#"][1]);
+	}
+	if (!empty($GLOBALS["rodzeta.siteoptions"]["#META_KEYWORDS#"][1])) {
+		$GLOBALS["APPLICATION"]->SetPageProperty("keywords", $GLOBALS["rodzeta.siteoptions"]["#META_KEYWORDS#"][1]);
+	}
+	if (!empty($GLOBALS["rodzeta.siteoptions"]["#META_DESCRIPTION#"][1])) {
+		$GLOBALS["APPLICATION"]->SetPageProperty("description", $GLOBALS["rodzeta.siteoptions"]["#META_DESCRIPTION#"][1]);
+	}
+	if (!empty($GLOBALS["rodzeta.siteoptions"]["#META_H1#"][1])) {
+		$GLOBALS["APPLICATION"]->SetTitle($GLOBALS["rodzeta.siteoptions"]["#META_H1#"][1]);
+	}
+});
+
 EventManager::getInstance()->addEventHandler("main", "OnEndBufferContent", function (&$content) {
 	if (\CSite::InDir("/bitrix/")) {
 		return;
