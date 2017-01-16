@@ -128,9 +128,17 @@ function Select($key) {
 	return is_readable($fname)? include $fname : [[], []];
 }
 
+/*
 function AppendValues($data, $n, $v) {
 	yield from $data;
 	for ($i = 0; $i < $n; $i++) {
 		yield  $v;
 	}
+}
+*/
+function AppendValues($data, $n, $v) {
+	for ($i = 0; $i < $n; $i++) {
+		$data[] = $v;
+	}
+	return $data;
 }
