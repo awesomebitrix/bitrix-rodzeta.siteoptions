@@ -69,10 +69,10 @@ class rodzeta_siteoptions extends CModule {
 	function DoInstall() {
 		// check module requirements
 		global $APPLICATION;
-		if (version_compare(PHP_VERSION, "7", "<")) {
-			$APPLICATION->ThrowException(Loc::getMessage("RODZETA_REQUIREMENTS_PHP_VERSION"));
-			return false;
-		}
+		//if (version_compare(PHP_VERSION, "7", "<")) {
+		//	$APPLICATION->ThrowException(Loc::getMessage("RODZETA_REQUIREMENTS_PHP_VERSION"));
+		//	return false;
+		//}
 		if (!defined("BX_UTF")) {
 			$APPLICATION->ThrowException(Loc::getMessage("RODZETA_REQUIREMENTS_BITRIX_UTF8"));
 			return false;
